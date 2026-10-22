@@ -1,0 +1,21 @@
+name: Feature request
+description: Suggest an idea for Hindsight.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What were you debugging?
+      description: Describe the bug or situation where Hindsight did not help you enough.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What would have helped? Mock-ups welcome.
+  - type: textarea
+    id: cost
+    attributes:
+      label: Cost
+      description: Hindsight aims to stay below a few hundredths of a millisecond per frame. Would your idea run every frame?

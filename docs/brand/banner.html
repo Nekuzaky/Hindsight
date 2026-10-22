@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- Source of docs/images/banner.png (1280x400). Render with Tools/Render-Brand.ps1. -->
+<html><head><meta charset="utf-8"><title>Hindsight banner</title><style>
+:root { --bg:#0e1015; --border:#2c303a; --text:#e6e9ef; --dim:#8b92a2; --accent:#8b7cff; --error:#ff5c5c; --bookmark:#38bdf8; }
+* { box-sizing:border-box; margin:0; padding:0; }
+html, body { width:100%; height:100%; }
+body { font-family:'Inter','Segoe UI Variable Display','Segoe UI',system-ui,sans-serif; color:var(--text); overflow:hidden;
+  background: radial-gradient(1200px 520px at 78% 30%, rgba(139,124,255,.22), transparent 60%),
+              radial-gradient(900px 500px at 10% 110%, rgba(56,189,248,.10), transparent 60%), var(--bg); }
+.grid { position:absolute; inset:0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+  linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 40px 40px;
+  -webkit-mask-image: radial-gradient(ellipse at 60% 40%, #000 30%, transparent 75%); }
+.logo { display:flex; align-items:center; gap:22px; }
+.mark { width:var(--mark); height:var(--mark); border-radius:calc(var(--mark) * .28); display:grid; place-items:center;
+  background: linear-gradient(145deg, #9d90ff, #6a5cf0); box-shadow: 0 12px 40px rgba(139,124,255,.45), inset 0 1px 0 rgba(255,255,255,.35); }
+.mark svg { width:58%; height:58%; fill:#fff; }
+h1 { font-size:var(--title); font-weight:800; letter-spacing:-.03em; line-height:1; }
+.tag { color:#c3c7d4; font-weight:600; }
+.sub { color:var(--dim); }
+.chips { display:flex; gap:12px; flex-wrap:wrap; }
+.chip { padding:9px 16px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--border); color:#cfd3de; font-weight:600; font-size:18px; }
+.chip b { color:var(--accent); }
+.tl { position:absolute; border-radius:16px; background:linear-gradient(180deg, #1a1d25, #14161c); border:1px solid var(--border);
+  box-shadow: 0 30px 80px rgba(0,0,0,.55); overflow:hidden; }
+.tl .ruler { height:30px; border-bottom:1px solid var(--border); position:relative; }
+.tl .tick { position:absolute; top:7px; font-size:13px; color:#5f6676; }
+.bars { position:absolute; left:14px; right:14px; bottom:12px; height:var(--bars); display:flex; align-items:flex-end; gap:3px; }
+.bars i { flex:1; background:rgba(139,124,255,.55); border-radius:2px 2px 0 0; }
+.playhead { position:absolute; top:0; bottom:0; width:3px; background:var(--accent); box-shadow:0 0 18px rgba(139,124,255,.9); }
+.playhead::before { content:''; position:absolute; top:0; left:-8px; border:9px solid transparent; border-top:11px solid var(--accent); }
+.past { position:absolute; top:31px; bottom:0; right:0; background:rgba(139,124,255,.12); }
+.label { position:absolute; top:4px; padding:3px 9px; border-radius:6px; background:var(--accent); color:#fff; font-weight:700; font-size:14px; }
+.dot { position:absolute; width:16px; height:16px; border-radius:50%; background:var(--error); box-shadow:0 0 14px rgba(255,92,92,.8); }
+.dia { position:absolute; width:15px; height:15px; background:var(--bookmark); transform:rotate(45deg); box-shadow:0 0 12px rgba(56,189,248,.8); }
+.scene { position:absolute; border-radius:16px; background:#14161c; border:1px solid var(--border); overflow:hidden; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+.floor { position:absolute; height:8px; background:#3a4050; border-radius:3px; }
+.ball { position:absolute; border-radius:50%; }
+.paddle { position:absolute; height:9px; border-radius:3px; background:#8b7cff; transform:rotate(-18deg); }
+.trail { position:absolute; width:4px; background:linear-gradient(180deg, rgba(139,124,255,.15), rgba(139,124,255,1)); border-radius:2px; }
+
+body { --mark:96px; --title:84px; }
+.left { position:absolute; left:72px; top:86px; width:600px; }
+.tag { font-size:30px; margin-top:24px; }
+.sub { font-size:21px; margin-top:12px; }
+</style></head>
+<body><div class="grid"></div>
+<div class="left"><div class="logo"><div class="mark"><svg viewBox="0 0 16 16"><path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022zm2.004.45a7 7 0 0 0-.985-.299l.219-.976q.576.129 1.126.342zm1.37.71a7 7 0 0 0-.439-.27l.493-.87a8 8 0 0 1 .979.654l-.615.789a7 7 0 0 0-.418-.302zm1.834 1.79a7 7 0 0 0-.653-.796l.724-.69q.406.429.747.91zm.744 1.352a7 7 0 0 0-.214-.468l.893-.45a8 8 0 0 1 .45 1.088l-.95.313a7 7 0 0 0-.179-.483m.53 2.507a7 7 0 0 0-.1-1.025l.985-.17q.1.58.116 1.17zm-.131 1.538q.05-.254.081-.51l.993.123a8 8 0 0 1-.23 1.155l-.964-.267q.069-.247.12-.501m-.952 2.379q.276-.436.486-.908l.914.405q-.24.54-.555 1.038zm-.964 1.205q.183-.183.35-.378l.758.653a8 8 0 0 1-.401.432z"/><path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0z"/><path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5"/></svg></div><h1>Hindsight</h1></div>
+  <div class="tag">The rewind debugger for Unity</div>
+  <div class="sub">Pause. Drag the timeline back. See exactly what happened.</div>
+</div>
+
+<div class="scene" style="left:720px; top:36px; width:300px; height:328px">
+  <div class="floor" style="left:24px; width:252px; top:164px"></div>
+  <div class="trail" style="left:210px; top:19px; height:203px"></div>
+  <div class="paddle" style="left:72px; top:98px; width:102px"></div>
+  <div class="ball" style="left:196px; top:216px; width:32px; height:32px; background:#ff5c5c;
+    box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 0 24px rgba(255,92,92,.8)"></div>
+  <div class="ball" style="left:60px; top:134px; width:30px; height:30px; background:#38bdf8"></div>
+  <div class="ball" style="left:87px; top:134px; width:30px; height:30px; background:#ffb020"></div>
+  <div class="ball" style="left:132px; top:42px; width:30px; height:30px; background:#8b7cff"></div>
+  <div class="ball" style="left:245px; top:134px; width:30px; height:30px; background:#3ddc84"></div>
+</div>
+
+<div class="tl" style="left:860px; top:236px; width:380px; height:140px; --bars:56px">
+  <div class="ruler"><span class="tick" style="left:8px">-6s</span><span class="tick" style="left:71px">-5s</span><span class="tick" style="left:134px">-4s</span><span class="tick" style="left:198px">-3s</span><span class="tick" style="left:261px">-2s</span><span class="tick" style="left:324px">-1s</span></div>
+  <div class="past" style="left:220px"></div>
+  <div class="bars"><i style="height:15%"></i><i style="height:23%"></i><i style="height:14%"></i><i style="height:17%"></i><i style="height:35%"></i><i style="height:14%"></i><i style="height:41%"></i><i style="height:20%"></i><i style="height:39%"></i><i style="height:15%"></i><i style="height:19%"></i><i style="height:13%"></i><i style="height:57%"></i><i style="height:33%"></i><i style="height:23%"></i><i style="height:22%"></i><i style="height:58%"></i><i style="height:60%"></i><i style="height:34%"></i><i style="height:22%"></i><i style="height:17%"></i><i style="height:9%"></i><i style="height:23%"></i><i style="height:27%"></i><i style="height:17%"></i><i style="height:19%"></i><i style="height:27%"></i><i style="height:59%"></i><i style="height:24%"></i><i style="height:43%"></i><i style="height:66%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:51%"></i><i style="height:26%"></i><i style="height:15%"></i><i style="height:21%"></i><i style="height:36%"></i><i style="height:23%"></i><i style="height:44%"></i><i style="height:32%"></i><i style="height:15%"></i><i style="height:20%"></i><i style="height:52%"></i><i style="height:9%"></i><i style="height:47%"></i><i style="height:68%"></i><i style="height:17%"></i><i style="height:11%"></i><i style="height:32%"></i><i style="height:22%"></i><i style="height:9%"></i><i style="height:51%"></i><i style="height:32%"></i></div>
+  <div class="dia" style="left:205px; top:44px"></div>
+  <div class="dot" style="left:228px; top:44px"></div>
+  <div class="dot" style="left:315px; top:46px; width:12px; height:12px; background:#ffb020; box-shadow:0 0 12px rgba(255,176,32,.7)"></div>
+  <div class="playhead" style="left:220px"></div>
+  <div class="label" style="left:230px">-2.315 s</div>
+</div>
+</body></html>

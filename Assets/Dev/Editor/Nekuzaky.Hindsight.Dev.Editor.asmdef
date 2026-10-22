@@ -1,0 +1,21 @@
+{
+    "name": "Nekuzaky.Hindsight.Dev.Editor",
+    "rootNamespace": "Nekuzaky.Hindsight.Dev",
+    "references": [
+        "Nekuzaky.Hindsight",
+        "Nekuzaky.Hindsight.Editor",
+        "Nekuzaky.Hindsight.Demo",
+        "Nekuzaky.Hindsight.Dev"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

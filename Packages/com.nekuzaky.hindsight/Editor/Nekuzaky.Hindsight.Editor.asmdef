@@ -1,0 +1,19 @@
+{
+    "name": "Nekuzaky.Hindsight.Editor",
+    "rootNamespace": "Nekuzaky.Hindsight.Editor",
+    "references": [
+        "Nekuzaky.Hindsight",
+        "Unity.Burst"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

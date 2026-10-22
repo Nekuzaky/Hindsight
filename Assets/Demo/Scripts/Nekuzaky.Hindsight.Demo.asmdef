@@ -1,0 +1,16 @@
+{
+    "name": "Nekuzaky.Hindsight.Demo",
+    "rootNamespace": "Nekuzaky.Hindsight.Demo",
+    "references": [
+        "Nekuzaky.Hindsight"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

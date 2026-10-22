@@ -1,0 +1,75 @@
+# The Hindsight window
+
+Open it with **Tools > Hindsight > Open Hindsight**, **Window > Analysis > Hindsight** or `Ctrl+Alt+H`.
+
+![The Hindsight window while rewinding](https://raw.githubusercontent.com/Nekuzaky/Hindsight/main/docs/images/screenshot-rewind.png)
+
+## Header
+
+| Element | Meaning |
+|---|---|
+| Status | **Idle** outside Play Mode, **Recording**, **Paused** (live scene), **Rewinding** (the scene shows the past) or **Off**. |
+| Objects | Objects alive now / slots used. A slot is reused once nothing in the history remembers its previous object. |
+| Memory | Memory holding the frames kept now. The tooltip shows how much was reserved (the memory budget). |
+| Cost | Main-thread time Hindsight used per captured frame, smoothed. The tooltip adds the 95th percentile. |
+| Bookmark | Adds a bookmark at the current frame (`F9`). |
+| Record | Turns recording in Play Mode on or off. Off, Hindsight costs nothing at all. |
+| Gear | Opens the [preferences](settings.md). |
+| Question mark | Opens this documentation. |
+
+## Transport
+
+| Button | Action | Keyboard (timeline focused) |
+|---|---|---|
+| First | Oldest recorded frame. | `Home` |
+| Previous event | Newest event before the displayed frame. Respects the event filters. | `Shift+Left` |
+| Step back | One frame back. Pauses the game first if it is running. | `Left` |
+| Pause / play | Pauses or resumes the game. Resuming always starts from the live scene. | |
+| Step forward | One frame forward, while rewinding. | `Right` |
+| Next event | Oldest event after the displayed frame. | `Shift+Right` |
+| Live | Puts every object back where it was and leaves the rewind. | `End` |
+| Fit | Shows the whole recording and follows new frames again. | `F`, or double-click |
+
+The readout shows how far back the displayed frame is (`-2.315 s`), its game frame number, and how many frames and
+seconds the history holds.
+
+## Timeline
+
+![Timeline](https://raw.githubusercontent.com/Nekuzaky/Hindsight/main/docs/images/screenshot-recording.png)
+
+- **Ruler**: seconds relative to now.
+- **Event lane**: red circles are errors and exceptions, amber triangles warnings, grey dots logs, blue diamonds
+  bookmarks. A message repeated on consecutive frames is one marker with a bar covering its range.
+- **Activity lane**: one bar per frame, as tall as the number of values that changed. Spikes show where things happened.
+- **Playhead**: green and labelled `LIVE` while the scene is live, purple while rewinding. The tinted area on its right
+  is the part of the recording that lies in the future of the displayed frame.
+
+| Do this | To |
+|---|---|
+| Click or drag | Show that frame. The game pauses if it was running. |
+| Click a marker | Jump to that event. |
+| Mouse wheel | Zoom around the cursor. |
+| `Shift` + wheel, middle-drag or `Alt` + drag | Pan. |
+| Double-click | See the whole recording again. |
+| Hover | Read the time, or the message of the marker under the cursor. |
+
+## Events
+
+Every recorded event, newest last. The chips filter errors, warnings, bookmarks and logs, and show their counts; the
+search field filters by text. Selecting an event rewinds to it and shows its full message; each script line of its
+stack trace becomes a button that opens the script at that line.
+
+## Selected object
+
+Select any object in the Hierarchy or the Scene view. The panel shows, at the displayed frame:
+
+- its **Transform** (local position, rotation and scale),
+- its **values**: linear and angular velocity for Rigidbody and Rigidbody2D, and every [tracked field](tracked-values.md),
+- whether it existed yet, and when it appeared.
+
+The **Graph** plots one of these values over the whole recording, on the same time axis as the timeline. Each pixel
+draws the minimum and maximum of the frames it covers, so a one-frame spike is never hidden. Click or drag on the graph
+to rewind. The header buttons frame the object in the Scene view and copy its Transform as it is at the displayed frame,
+so you can paste the values after leaving Play Mode (right-click the Transform > **Paste Component Values**).
+
+If the object is not recorded, the panel says why: static, excluded layer, camera excluded, or the object limit.

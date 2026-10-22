@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/Nekuzaky/Hindsight/blob/main/Packages/com.nekuzaky.hindsight/Documentation~/index.md
+    about: Guides for every feature, settings reference and troubleshooting.
+  - name: Security report
+    url: https://github.com/Nekuzaky/Hindsight/security/advisories/new
+    about: Report security problems privately.

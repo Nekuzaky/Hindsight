@@ -1,0 +1,18 @@
+{
+    "name": "Nekuzaky.Hindsight.TestSupport",
+    "rootNamespace": "Nekuzaky.Hindsight.Tests",
+    "references": [
+        "Nekuzaky.Hindsight"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

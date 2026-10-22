@@ -112,3 +112,6 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Hindsight tooling output (logs, test results, benchmark, media frames)
+/Tools/Output/

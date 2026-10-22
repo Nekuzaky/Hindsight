@@ -169,3 +169,10 @@ Packages/packages-lock.json linguist-generated
 
 # Exceptions for .asset files such as lightning pre-baking
 LightingData.asset     binary
+
+# Hindsight: the package and the README media stay out of Git LFS, so installing the package from a git URL
+# and the raw image links in the documentation work on machines without Git LFS.
+Packages/com.nekuzaky.hindsight/**/*.png -filter -diff -merge
+docs/**/*.png -filter -diff -merge
+docs/**/*.gif -filter -diff -merge
+docs/**/*.mp4 -filter -diff -merge

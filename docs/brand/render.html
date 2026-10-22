@@ -1,0 +1,61 @@
+<!doctype html>
+<!--
+  Turns one of the brand pages into a PNG in the browser: the page is drawn through an SVG foreignObject onto a
+  canvas, then posted back to the local server started by Tools/Render-Brand.ps1.
+  Usage: render.html?page=banner.html&w=1280&h=400&out=docs/images/banner.png
+-->
+<html><head><meta charset="utf-8"><title>Hindsight brand renderer</title></head>
+<body style="background:#222;color:#ddd;font:14px sans-serif">
+<pre id="status">Rendering...</pre>
+<script>
+(async function () {
+  const status = document.getElementById('status');
+  const params = new URLSearchParams(location.search);
+  const page = params.get('page'), out = params.get('out');
+  const width = +params.get('w'), height = +params.get('h');
+
+  const html = await (await fetch(page + (params.get('query') || ''))).text();
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const color = params.get('color');
+  if (color) {
+    const icon = doc.getElementById('icon');
+    if (icon) icon.setAttribute('fill', '#' + color);
+  }
+  doc.querySelectorAll('script').forEach(s => s.remove());
+
+  // Inside foreignObject there is no <html>/<body>: map their rules onto a wrapper element.
+  let css = Array.from(doc.querySelectorAll('style')).map(s => s.textContent).join('\n');
+  css = css.replace(/html,\s*body/g, '.fo-body').replace(/(^|[\s,}])body(?=[\s{.,])/g, '$1.fo-body');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'fo-body';
+  wrapper.innerHTML = doc.body.innerHTML;
+  const serializer = new XMLSerializer();
+  const content = serializer.serializeToString(wrapper);
+  const style = '<style>' + css.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '.fo-body{position:relative;width:' + width + 'px;height:' + height + 'px}</style>';
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + width + '" height="' + height + '">' +
+    '<foreignObject width="100%" height="100%"><div xmlns="http://www.w3.org/1999/xhtml">' + style + content +
+    '</div></foreignObject></svg>';
+
+  const image = new Image();
+  image.width = width;
+  image.height = height;
+  await new Promise((resolve, reject) => {
+    image.onload = resolve;
+    image.onerror = reject;
+    image.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+  const response = await fetch('/save?out=' + encodeURIComponent(out), { method: 'POST', body: canvas.toDataURL('image/png') });
+  status.textContent = (response.ok ? 'saved ' : 'failed ') + out;
+  document.title = response.ok ? 'done' : 'failed';
+})().catch(error => {
+  document.getElementById('status').textContent = 'error: ' + error;
+  document.title = 'failed';
+});
+</script>
+</body></html>
