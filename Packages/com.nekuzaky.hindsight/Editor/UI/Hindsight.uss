@@ -159,6 +159,41 @@
 .hs-root .hs-readout__offset--live { color: var(--hs-live); }
 .hs-root .hs-readout__frame { color: var(--hs-text-2); font-size: 11px; }
 
+/* ------------------------------------------------------------------ find bar */
+
+.hs-find {
+    flex-direction: row;
+    align-items: center;
+    height: 30px;
+    margin: 0 8px 6px 12px;
+    flex-shrink: 0;
+}
+
+.hs-find__field { width: 380px; margin: 0 4px 0 0; }
+
+.hs-root .hs-find__field #unity-text-input {
+    background-color: var(--hs-panel);
+    border-color: var(--hs-border);
+    border-radius: 5px;
+    color: var(--hs-text);
+    padding-left: 6px;
+}
+
+.hs-root .hs-find__field:focus #unity-text-input { border-color: rgba(139, 124, 255, 0.7); }
+
+.hs-root .hs-find__result {
+    margin-left: 8px;
+    color: var(--hs-text-2);
+    font-size: 11px;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.hs-root .hs-find__result--found { color: rgb(178, 168, 255); }
+.hs-root .hs-find__result--error { color: rgb(255, 196, 92); }
+
 /* ------------------------------------------------------------------ timeline */
 
 .hs-timeline {

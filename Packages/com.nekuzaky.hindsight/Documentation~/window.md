@@ -33,6 +33,21 @@ Open it with **Tools > Hindsight > Open Hindsight**, **Window > Analysis > Hinds
 The readout shows how far back the displayed frame is (`-2.315 s`), its game frame number, and how many frames and
 seconds the history holds.
 
+## Find when
+
+The bar under the transport jumps to the frame where a condition becomes true. Press `Ctrl+F` to focus it.
+
+| Write | To find |
+|---|---|
+| `y < -5` | When the selected object goes below -5 (also `x`, `z`, in local space). |
+| `speed > 20` | When its Rigidbody goes faster than 20 m/s (also `vx`, `vy`, `vz`, `angular`). |
+| `Health <= 0` | When one of its tracked fields reaches 0, by the name shown in the panel. `true` and `false` work for booleans. |
+| `any y < -10` | When any recorded object goes below -10, and selects that object. `any` works with `x`, `y` and `z`. |
+
+Operators: `<`, `<=`, `>`, `>=`, `==`, `!=`. `Enter` finds the next moment after the displayed frame (from the start
+of the recording when the scene is live), `Shift+Enter` the previous one. Only transitions count: a value that stays
+below -5 for ten frames is found once, where it crosses. Focus the field to see which names the selected object offers.
+
 ## Timeline
 
 ![Timeline](https://raw.githubusercontent.com/Nekuzaky/Hindsight/main/docs/images/screenshot-recording.png)

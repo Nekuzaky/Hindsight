@@ -3,6 +3,18 @@
 All notable changes to this package are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- **Find when:** type a condition such as `y < -5`, `speed > 20`, `Health <= 0` or `any y < -10` and jump to the
+  frame where it becomes true; `Enter` for the next match, `Shift+Enter` for the previous one, `Ctrl+F` to focus.
+  `any` searches the position of every recorded object and selects the one it finds.
+
+### Changed
+
+- The package description says exactly what reaches a build: a 5 KB assembly whose calls are removed.
+
 ## [1.0.2] - 2026-10-23
 
 ### Fixed

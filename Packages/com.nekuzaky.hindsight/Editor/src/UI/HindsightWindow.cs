@@ -39,6 +39,7 @@ namespace Nekuzaky.Hindsight.Editor
         private readonly TimeAxis _axis = new();
         private TimelineView _timeline;
         private EventsPanel _events;
+        private FindBar _find;
         private InspectorPanel _inspector;
         private VisualElement _main;
         private VisualElement _emptyState;
@@ -91,6 +92,8 @@ namespace Nekuzaky.Hindsight.Editor
             _main = new VisualElement();
             _main.AddToClassList("hs-main");
             _main.Add(BuildTransport());
+            _find = new FindBar();
+            _main.Add(_find);
 
             _timeline = new TimelineView(_axis);
             _timeline.FrameRequested += Navigation.Show;
@@ -111,6 +114,7 @@ namespace Nekuzaky.Hindsight.Editor
             root.Add(_main);
 
             root.Add(BuildEmptyState());
+            root.RegisterCallback<KeyDownEvent>(OnRootKeyDown);
             root.schedule.Execute(Tick).Every(RefreshMilliseconds);
             Refresh(true);
         }
@@ -394,6 +398,14 @@ namespace Nekuzaky.Hindsight.Editor
             if (recorder == null || markerIndex < 0 || markerIndex >= recorder.Markers.Count)
                 return;
             Navigation.Show(recorder.Markers[markerIndex].Sequence);
+        }
+
+        private void OnRootKeyDown(KeyDownEvent evt)
+        {
+            if (evt.keyCode != KeyCode.F || !evt.actionKey)
+                return;
+            _find?.FocusField();
+            evt.StopPropagation();
         }
 
         private static void ToggleRecording()

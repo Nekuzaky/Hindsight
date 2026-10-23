@@ -47,6 +47,8 @@ make it happen again.
   Resume, step or exit Play Mode and everything is back live.
 - **A timeline that points at the problem.** Errors, exceptions, warnings and bookmarks are markers you click to jump
   to; an activity lane shows how much moved on each frame. Zoom, pan, step frame by frame, jump event to event.
+- **Jump to the moment it happened.** Type `y < -5`, `speed > 20`, `Health <= 0` or `any y < -10` and Hindsight
+  jumps to the frame where it becomes true, and selects the object.
 - **Inspect any object at any frame.** Transform, Rigidbody and Rigidbody2D velocities, and your own fields, with a
   graph over the whole recording that never hides a one-frame spike.
 - **Your variables on the timeline.** `[HindsightTrack]` on a field, or right-click it in the Inspector and choose
