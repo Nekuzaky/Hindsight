@@ -6,10 +6,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Fixed-size ring of delta entries addressed by an ever-growing absolute index.
-    /// Allocated once per recording session; writing never allocates.
-    /// </summary>
     internal sealed class DeltaRing<T> : IDisposable where T : unmanaged
     {
         #region Public
@@ -22,10 +18,8 @@ namespace Nekuzaky.Hindsight.Editor
 
         public int Capacity => _items.Length;
 
-        /// <summary>Absolute index of the next entry to write.</summary>
         public long Head { get; private set; }
 
-        /// <summary>Absolute index of the oldest entry still kept.</summary>
         public long Tail { get; private set; }
 
         public int Count => (int)(Head - Tail);
@@ -67,14 +61,12 @@ namespace Nekuzaky.Hindsight.Editor
             Head++;
         }
 
-        /// <summary>Accepts entries a job wrote right after <see cref="Head"/>.</summary>
         public void Commit(int written)
         {
             Debug.Assert(written >= 0 && written <= Free, "A job wrote more entries than the free space.");
             Head += written;
         }
 
-        /// <summary>Forgets the entries written at or after <paramref name="absoluteIndex"/>.</summary>
         public void TruncateTo(long absoluteIndex)
         {
             Debug.Assert(absoluteIndex >= Tail && absoluteIndex <= Head, "Truncation point outside the kept range.");
@@ -99,7 +91,6 @@ namespace Nekuzaky.Hindsight.Editor
                 _items.Dispose();
         }
 
-        /// <summary>Writes the kept entries with their absolute indices.</summary>
         public void WriteTo(BinaryWriter writer, byte[] buffer)
         {
             writer.Write(Tail);
@@ -110,7 +101,6 @@ namespace Nekuzaky.Hindsight.Editor
             NativeIO.Write(writer, _items, 0, Count - before, buffer);
         }
 
-        /// <summary>Reads what <see cref="WriteTo"/> wrote. The ring may have another capacity, as long as the entries fit.</summary>
         public void ReadFrom(BinaryReader reader, byte[] buffer)
         {
             var tail = reader.ReadInt64();

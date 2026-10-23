@@ -4,31 +4,16 @@ using UnityEngine.SceneManagement;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    // Discovery of new objects, on every captured frame, at a cost that grows with what changed rather than with
-    // the size of the scene.
-    //
-    // Each root keeps a signature: its transform count and the instance id of its deepest last child. Unity appends
-    // new children at the end of their parent, so when a signature changes the scan walks the last children of the
-    // rightmost branch backwards and stops at the first child it already knows. A brand-new root is walked whole.
-    // When that tail search finds nothing although the root grew, the root is walked whole. A slow round-robin
-    // sweep of small roots catches the rare object inserted in the middle of its siblings while another is
-    // destroyed on the same frame.
     internal sealed partial class Recorder
     {
         #region Public
 
-        /// <summary>Captured frames between two sweep steps.</summary>
         public const int SweepPeriod = 30;
 
-        /// <summary>Transforms a sweep step may walk. Larger roots are only walked when their signature changes.</summary>
         public const int SweepBudget = 1024;
 
-        /// <summary>Asks for every root to be walked at the next captured frame.</summary>
         public void MarkHierarchyDirty() => _scanEverything = true;
 
-        /// <summary>
-        /// Lets the recorder see the DontDestroyOnLoad scene through an object that lives in it. Play Mode only.
-        /// </summary>
         public void SetPersistentSceneProbe(GameObject probe) => _probe = probe;
 
         #endregion
@@ -83,7 +68,6 @@ namespace Nekuzaky.Hindsight.Editor
             if (_probe != null && _probe.scene.IsValid())
                 ScanScene(_probe.scene, sequence);
 
-            // The sweep wraps around once it has passed the last root.
             if (_sweepBudget > 0)
                 _sweepCursor = 0;
             _scanEverything = false;
@@ -126,12 +110,10 @@ namespace Nekuzaky.Hindsight.Editor
                 _sweepCursor = index + 1;
             }
 
-            // A root cut short by a limit is not remembered, so it is walked again once slots free up.
             if (!_incomplete)
                 _nextRootStates[id] = state;
         }
 
-        /// <summary>Registers the unknown children at the end of each node of the rightmost branch.</summary>
         private int WalkTail(Transform root, int sequence)
         {
             var found = 0;
@@ -155,7 +137,6 @@ namespace Nekuzaky.Hindsight.Editor
             return found;
         }
 
-        /// <summary>Registers every unknown transform under <paramref name="top"/>, itself included.</summary>
         private int WalkSubtree(Transform top, int sequence)
         {
             top.GetComponentsInChildren(true, _hierarchy);
@@ -187,7 +168,6 @@ namespace Nekuzaky.Hindsight.Editor
             return _slotById.ContainsKey(id) || _ignored.Contains(id);
         }
 
-        /// <summary>Id of the last child of the last child, and so on: new objects usually land there.</summary>
         private static EntityId Signature(Transform root)
         {
             var current = root;
@@ -213,7 +193,6 @@ namespace Nekuzaky.Hindsight.Editor
             return !Options.IgnoreCameras || !transform.TryGetComponent<Camera>(out _);
         }
 
-        /// <summary>Registers one transform right away, outside the scan. Used by tests.</summary>
         internal int Track(Transform transform)
         {
             if (TryGetSlot(transform, out var slot))

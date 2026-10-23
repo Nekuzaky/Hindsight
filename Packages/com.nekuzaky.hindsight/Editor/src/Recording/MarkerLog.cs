@@ -17,7 +17,6 @@ namespace Nekuzaky.Hindsight.Editor
         SceneLoad
     }
 
-    /// <summary>Something that happened at a frame: a Console message or a bookmark.</summary>
     internal struct Marker
     {
         public int Sequence;
@@ -30,10 +29,8 @@ namespace Nekuzaky.Hindsight.Editor
 
         public readonly bool IsError => Kind == MarkerKind.Error || Kind == MarkerKind.Exception || Kind == MarkerKind.Assert;
 
-        /// <summary>Objects appearing or disappearing, or a scene loading.</summary>
         public readonly bool IsLifecycle => Kind == MarkerKind.Spawn || Kind == MarkerKind.Destroy || Kind == MarkerKind.SceneLoad;
 
-        /// <summary>First line of the message, the part shown in lists.</summary>
         public readonly string Title
         {
             get
@@ -46,10 +43,6 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>
-    /// Bounded ring of markers. When repeats are collapsed, a message identical to the previous one within a few
-    /// frames extends that marker instead of adding a new one, so an error raised every frame stays one entry.
-    /// </summary>
     internal sealed class MarkerLog
     {
         #region Public
@@ -68,7 +61,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public int Capacity => _items.Length;
 
-        /// <summary>Changes every time a marker is added, extended or removed; lets views skip rebuilding.</summary>
         public int Version { get; private set; }
 
         public bool CollapseRepeats { get; set; } = true;
@@ -121,7 +113,6 @@ namespace Nekuzaky.Hindsight.Editor
             Version++;
         }
 
-        /// <summary>Drops markers whose whole range is older than <paramref name="oldestSequence"/>.</summary>
         public void TrimBefore(int oldestSequence)
         {
             var removed = 0;
@@ -136,7 +127,6 @@ namespace Nekuzaky.Hindsight.Editor
                 Version++;
         }
 
-        /// <summary>Drops markers raised after <paramref name="sequence"/> and shortens the ranges that go past it.</summary>
         public void TrimAfter(int sequence)
         {
             for (var guard = Count; guard > 0 && Count > 0 && this[Count - 1].Sequence > sequence; guard--)
@@ -209,7 +199,6 @@ namespace Nekuzaky.Hindsight.Editor
             return total;
         }
 
-        /// <summary>Index of the first marker at or after <paramref name="sequence"/>, or <see cref="Count"/>.</summary>
         public int LowerBound(int sequence)
         {
             int low = 0, high = Count;
@@ -231,7 +220,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         private bool TryExtendLast(MarkerKind kind, string message, int sequence)
         {
-            // Looks a few markers back so messages that alternate every frame collapse too.
             var depth = Math.Min(Count, CollapseWindow);
             for (var back = 1; back <= depth; back++)
             {

@@ -5,8 +5,6 @@ using UnityEngine.Jobs;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    // Slots: one per recorded transform. A slot keeps its index for the whole life of the object, and is reused
-    // only once every frame that still mentions its previous owner has left the history.
     internal sealed partial class Recorder
     {
         #region Public
@@ -15,15 +13,12 @@ namespace Nekuzaky.Hindsight.Editor
 
         public Transform TransformOf(int slot) => _transforms[slot];
 
-        /// <summary>First sequence the slot's current object exists in.</summary>
         public int BirthOf(int slot) => _birth[slot];
 
-        /// <summary>First sequence the slot's object no longer exists in, or <see cref="Alive"/>.</summary>
         public int DeathOf(int slot) => _death[slot];
 
         public bool IsAliveSlot(int slot) => slot >= 0 && slot < SlotCount && _death[slot] == Alive;
 
-        /// <summary>True if the slot's object existed at that frame (it may be destroyed now).</summary>
         public bool ExistedAt(int slot, int sequence) => _birth[slot] <= sequence && sequence < _death[slot];
 
         public bool WasRoot(int slot) => _isRoot[slot];
@@ -94,7 +89,6 @@ namespace Nekuzaky.Hindsight.Editor
             _recycleStart = 0;
         }
 
-        /// <summary>Starts recording a transform. Returns its slot, or -1 when a limit stops it.</summary>
         private int Register(Transform transform, int sequence)
         {
             Debug.Assert(transform != null, "Cannot record a missing transform.");
@@ -169,7 +163,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         private EntityId EntityIdOf(int slot)
         {
-            // The transform is destroyed, but its managed wrapper still knows its id.
             var transform = _transforms[slot];
             return ReferenceEquals(transform, null) ? EntityId.None : transform.GetEntityId();
         }

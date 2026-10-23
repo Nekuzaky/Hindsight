@@ -12,10 +12,6 @@ using Object = UnityEngine.Object;
 
 namespace Nekuzaky.Hindsight.Dev
 {
-    /// <summary>
-    /// Measures what recording costs in real Play Mode, with the real player loop. Each scenario runs twice, with
-    /// recording off and on, at a fixed 60 frames per simulated second. Run it with Tools/Benchmark.ps1.
-    /// </summary>
     [InitializeOnLoad]
     internal static class Benchmark
     {
@@ -90,7 +86,6 @@ namespace Nekuzaky.Hindsight.Dev
                 Begin();
         }
 
-        /// <summary>Entry point for -executeMethod.</summary>
         public static void Run()
         {
             var output = Path.Combine(Directory.GetCurrentDirectory(), "Tools", "Output", "benchmark");
@@ -195,7 +190,6 @@ namespace Nekuzaky.Hindsight.Dev
         private static void Animate(Scenario scenario)
         {
             var t = _frame * (1f / 60f);
-            // Bobbing and turning: three of the ten transform components change, as for a typical character.
             for (var i = 0; i < Movers.Count; i++)
             {
                 Movers[i].SetLocalPositionAndRotation(new Vector3(i % 100, i / 100 + Mathf.Sin(t * 2f + i * 0.01f), 0f),

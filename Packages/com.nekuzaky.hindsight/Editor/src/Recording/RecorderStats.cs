@@ -3,10 +3,6 @@ using System.Diagnostics;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// What recording costs, measured on the main thread around Hindsight's own work only. Fixed-size buffers, so
-    /// updating the statistics never allocates.
-    /// </summary>
     internal sealed class RecorderStats
     {
         #region Public
@@ -50,7 +46,6 @@ namespace Nekuzaky.Hindsight.Editor
             TotalAllocatedBytes += allocatedBytes;
         }
 
-        /// <summary>Percentile of the last <see cref="Window"/> frames, 0 to 1. Used by the benchmark and tooltips.</summary>
         public double Percentile(double fraction)
         {
             var count = SampleCount;

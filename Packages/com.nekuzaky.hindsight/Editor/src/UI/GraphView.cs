@@ -4,10 +4,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Plots one value of the selected object over the recorded time, on the same axis as the timeline.
-    /// Each pixel column draws the minimum and maximum of the frames it covers, so spikes are never hidden.
-    /// </summary>
     internal sealed class GraphView : VisualElement
     {
         #region Public
@@ -53,7 +49,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Copies the series to draw. <paramref name="times"/> and <paramref name="values"/> are per frame.</summary>
         public void SetSeries(double[] times, float[] values, int count, string unit)
         {
             if (_values.Length < count)
@@ -78,7 +73,6 @@ namespace Nekuzaky.Hindsight.Editor
             MarkDirtyRepaint();
         }
 
-        /// <summary>Shows the value at the displayed frame next to the playhead.</summary>
         public void SetCurrent(string text)
         {
             _valueLabel.text = text;

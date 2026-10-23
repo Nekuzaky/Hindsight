@@ -1,9 +1,5 @@
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Marker texts for objects appearing and disappearing, built once, so recording never formats a string.
-    /// Identical texts on consecutive frames collapse into one marker.
-    /// </summary>
     internal static class LifecycleText
     {
         #region Private and Protected

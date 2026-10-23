@@ -5,17 +5,12 @@ using UnityEngine.SceneManagement;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Where an object sits in its scene: the scene name, then the sibling index and name of each level from the
-    /// root down. Used to find the same object again when a saved recording is opened.
-    /// </summary>
     internal static class ScenePath
     {
         #region Public
 
         public const int MaxDepth = 256;
 
-        /// <summary>Writes the path of <paramref name="transform"/>, or an empty path when it cannot be described.</summary>
         public static void Write(BinaryWriter writer, Transform transform, List<Transform> chain)
         {
             chain.Clear();
@@ -34,7 +29,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>Reads a path and finds the object in the open scenes, or returns null.</summary>
         public static Transform Read(BinaryReader reader, List<GameObject> roots)
         {
             var sceneName = reader.ReadString();

@@ -8,10 +8,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The list of recorded events with filters and search. Picking an event rewinds to it; its stack trace lines
-    /// open the script at the right line.
-    /// </summary>
     internal sealed class EventsPanel : VisualElement
     {
         #region Public
@@ -44,7 +40,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public event Action FilterChanged;
 
-        /// <summary>A marker index the user picked in the list.</summary>
         public event Action<int> MarkerPicked;
 
         #endregion

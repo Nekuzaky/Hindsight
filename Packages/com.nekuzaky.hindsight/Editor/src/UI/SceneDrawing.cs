@@ -4,10 +4,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Scene view drawing: the motion trail of the selected objects over the recording, with the displayed frame
-    /// and the error markers on it, and ghosts where destroyed objects were at the displayed frame.
-    /// </summary>
     [InitializeOnLoad]
     internal static class SceneDrawing
     {
@@ -75,7 +71,6 @@ namespace Nekuzaky.Hindsight.Editor
             if (trail.Count < 2)
                 return;
 
-            // The path already travelled at the displayed frame is solid, the rest of the recording is faint.
             var current = NearestPoint(trail, Navigation.Displayed);
             var past = Palette.Accent;
             var future = Palette.Accent;

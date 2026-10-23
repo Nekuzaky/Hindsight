@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Bootstrap Icons shipped with the package, tinted through USS.</summary>
     internal static class Glyphs
     {
         #region Public
@@ -100,7 +99,6 @@ namespace Nekuzaky.Hindsight.Editor
             return image;
         }
 
-        /// <summary>An icon element. Its colour comes from the <c>hs-icon</c> classes in the style sheet.</summary>
         public static VisualElement Icon(string name, params string[] classes)
         {
             var icon = new VisualElement { pickingMode = PickingMode.Ignore };

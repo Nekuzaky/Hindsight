@@ -2,10 +2,6 @@ using System;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The visible stretch of time, shared by the timeline and the graph so they always line up.
-    /// While following, the right edge sticks to the newest frame; zooming or panning away stops following.
-    /// </summary>
     internal sealed class TimeAxis
     {
         #region Public
@@ -42,7 +38,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public double ToTime(float x, float width) => Start + x / Math.Max(width, 1f) * Span;
 
-        /// <summary>Follows the recorded range as it grows or gets trimmed.</summary>
         public void SetBounds(double oldest, double newest)
         {
             Oldest = oldest;
@@ -63,7 +58,6 @@ namespace Nekuzaky.Hindsight.Editor
             Apply(start, start + width);
         }
 
-        /// <summary>Zooms around <paramref name="anchor"/>; a factor below 1 zooms in.</summary>
         public void Zoom(double factor, double anchor)
         {
             var available = Math.Max(Newest - Oldest, MinSpan);
@@ -82,7 +76,6 @@ namespace Nekuzaky.Hindsight.Editor
             Place(Start + seconds, Span);
         }
 
-        /// <summary>Shows a span ending at the newest frame and keeps following it.</summary>
         public void Fit()
         {
             _fitAll = true;
@@ -90,7 +83,6 @@ namespace Nekuzaky.Hindsight.Editor
             SetBounds(Oldest, Newest);
         }
 
-        /// <summary>Scrolls just enough to bring <paramref name="time"/> into view.</summary>
         public void Reveal(double time)
         {
             if (time >= Start && time <= End)

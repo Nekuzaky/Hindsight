@@ -6,17 +6,12 @@ using Object = UnityEngine.Object;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    // Saving and opening: a recorder read from a file holds the same history, events, slots and streams as the one
-    // that wrote it. Its slots point to the objects of the open scenes found at the same place in the hierarchy;
-    // objects created while playing have no counterpart and are left out of rewinds.
     internal sealed partial class Recorder
     {
         #region Public
 
-        /// <summary>True for a recording opened from a file: it is only viewed, never recorded into.</summary>
         public bool IsFromFile { get; private set; }
 
-        /// <summary>Objects of a file found in the open scenes, and objects that were not.</summary>
         public int MatchedObjects { get; private set; }
 
         public int MissingObjects { get; private set; }
@@ -89,8 +84,6 @@ namespace Nekuzaky.Hindsight.Editor
                 ResizeSlots(Mathf.NextPowerOfTwo(slots));
             SlotCount = slots;
 
-            // Slots without an object in the open scenes point to a transform destroyed right after: the jobs see
-            // them as invalid and leave them alone.
             var placeholder = new GameObject("Hindsight Placeholder") { hideFlags = HideFlags.HideAndDontSave };
             var roots = new List<GameObject>(64);
             var taken = new HashSet<EntityId>();
@@ -178,7 +171,6 @@ namespace Nekuzaky.Hindsight.Editor
             CheckLinks();
         }
 
-        /// <summary>Every slot and stream index read from the file must point inside the recording.</summary>
         private void CheckLinks()
         {
             for (var slot = 0; slot < SlotCount; slot++)

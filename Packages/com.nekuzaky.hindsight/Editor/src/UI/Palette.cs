@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Colours used by custom drawing. They match the variables in Hindsight.uss.</summary>
     internal static class Palette
     {
         public static readonly Color Background = Rgb(17, 19, 24);

@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Finds the frame where a condition becomes true: on one value of the selected object, or, with <c>any</c>,
-    /// on the position of every recorded object. Only transitions count, so a value that stays true is found once.
-    /// </summary>
     internal static class MomentFinder
     {
         #region Public
@@ -29,10 +25,6 @@ namespace Nekuzaky.Hindsight.Editor
             public string Message { get; }
         }
 
-        /// <summary>
-        /// Searches after <paramref name="from"/> (or before it when <paramref name="forward"/> is false). Pass a
-        /// sequence older than the history to search from the very first frame.
-        /// </summary>
         public static Result Find(Recorder recorder, in ConditionQuery query, int selectedSlot, int from, bool forward)
         {
             Debug.Assert(recorder != null, "A recorder is required.");
@@ -44,7 +36,6 @@ namespace Nekuzaky.Hindsight.Editor
                 : FindOnSlot(recorder, query, selectedSlot, from, forward);
         }
 
-        /// <summary>Channels a slot offers, for hints: x, y, z, then velocities and tracked fields.</summary>
         public static string DescribeChannels(Recorder recorder, int slot)
         {
             var names = new List<string> { "x", "y", "z" };
@@ -144,7 +135,6 @@ namespace Nekuzaky.Hindsight.Editor
             return true;
         }
 
-        /// <summary>Finds the stream behind a channel name. <paramref name="component"/> is -1 for the whole value.</summary>
         private static bool TryFindStream(Recorder recorder, int slot, string channel, out int stream, out int component)
         {
             var streams = new List<int>();
@@ -193,10 +183,6 @@ namespace Nekuzaky.Hindsight.Editor
                 : Found(recorder, query, hit.sequence, hit.slot);
         }
 
-        /// <summary>
-        /// Replays the transform deltas from <paramref name="first"/> + 1 to <paramref name="last"/>, tracking for each
-        /// slot whether the condition holds. Returns the first transition, or the last one when not stopping early.
-        /// </summary>
         private static (int sequence, int slot) Scan(Recorder recorder, in ConditionQuery query, int axis, int first, int last, bool stopAtFirst)
         {
             var history = recorder.History;
@@ -207,7 +193,6 @@ namespace Nekuzaky.Hindsight.Editor
             (int sequence, int slot) found = (-1, -1);
             try
             {
-                // Searching from before the history: whatever already holds on the oldest frame is a first moment.
                 var fromStart = first < history.OldestSequence;
                 var start = Math.Max(first, history.OldestSequence);
                 if (history.Seek(start, states, slots, values, recorder.StreamCount))

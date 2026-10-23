@@ -7,7 +7,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Tests
 {
-    /// <summary>Drives a <see cref="History"/> by hand the way the recorder does, and keeps the ground truth.</summary>
     internal sealed class SyntheticRecording : IDisposable
     {
         public SyntheticRecording(int slots, int streams, int transformCapacity, int valueCapacity, double window)
@@ -33,7 +32,6 @@ namespace Nekuzaky.Hindsight.Tests
 
         public static TransformSample Expected(int slot, int frame)
         {
-            // Even slots move every frame, odd slots only every fifth frame.
             var step = slot % 2 == 0 ? frame : frame / 5;
             return new TransformSample
             {
@@ -118,7 +116,6 @@ namespace Nekuzaky.Hindsight.Tests
         [Test]
         public void SmallRing_EvictsUnderPressureWithoutLosingConsistency()
         {
-            // 64 slots, every even slot moving: 32 deltas per frame in a ring of 4096 entries.
             using var recording = new SyntheticRecording(64, 2, 4096, 4096, 1000d);
             for (var frame = 0; frame < 2000; frame++)
                 recording.Record(frame, frame / 60d);

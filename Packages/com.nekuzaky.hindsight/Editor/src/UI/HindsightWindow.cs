@@ -4,10 +4,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The Hindsight window: status and cost of the recording, transport controls, the timeline, the event list and
-    /// the selected object's values at the displayed frame.
-    /// </summary>
     internal sealed class HindsightWindow : EditorWindow
     {
         #region Public
@@ -264,7 +260,6 @@ namespace Nekuzaky.Hindsight.Editor
             if (_main == null)
                 return;
 
-            // Finishes the pending capture so everything below reads complete data, also while the game runs.
             var recorder = HindsightSession.Recorder;
             recorder?.Commit();
 

@@ -5,7 +5,6 @@ using Unity.Collections;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Copies native arrays to and from a stream through one reusable managed buffer, chunk by chunk.</summary>
     internal static class NativeIO
     {
         #region Public
@@ -38,7 +37,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>Throws <see cref="InvalidDataException"/> when a stored count is out of range: the file is damaged.</summary>
         public static int CheckCount(long count, long limit, string what)
         {
             if (count < 0 || count > limit)
@@ -53,7 +51,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         private static void ReadExactly(BinaryReader reader, byte[] buffer, int count)
         {
-            // Every pass reads at least one byte or fails, so the loop runs at most count times.
             var read = 0;
             for (var pass = 0; read < count && pass < count; pass++)
             {

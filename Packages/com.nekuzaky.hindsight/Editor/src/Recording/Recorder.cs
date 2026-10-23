@@ -6,11 +6,6 @@ using UnityEngine.Jobs;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Records the scene frame after frame. At the end of a frame it schedules a Burst job that reads every tracked
-    /// transform on worker threads; at the start of the next frame it collects the result, samples velocities and
-    /// tracked fields, and closes the frame. Steady-state recording does not allocate managed memory.
-    /// </summary>
     internal sealed partial class Recorder : IDisposable
     {
         #region Public
@@ -35,24 +30,20 @@ namespace Nekuzaky.Hindsight.Editor
         public MarkerLog Markers { get; }
         public RecorderStats Stats { get; }
 
-        /// <summary>Slots in use, alive or dead. Arrays indexed by slot are at least this long.</summary>
         public int SlotCount { get; private set; }
 
         public int AliveCount { get; private set; }
 
         public int StreamCount { get; private set; }
 
-        /// <summary>True once the object limit or the memory budget stopped new objects from being recorded.</summary>
         public bool LimitReached { get; private set; }
 
         public bool IsDisposed { get; private set; }
 
         public bool HasPendingFrame => _pending;
 
-        /// <summary>The sequence a Console message raised now belongs to.</summary>
         public int MarkerSequence => History.NewestSequence + 1;
 
-        /// <summary>Live transforms of every slot, as of the newest committed frame.</summary>
         public NativeArray<TransformSample> State => _last;
 
         public NativeArray<Vector4> ValueState => _values;
@@ -92,7 +83,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>End of a frame: registers new objects and schedules the capture job.</summary>
         public void EndFrame(in FrameClock clock)
         {
             Debug.Assert(!IsDisposed, "EndFrame on a disposed recorder.");
@@ -107,16 +97,11 @@ namespace Nekuzaky.Hindsight.Editor
             _appeared = 0;
             Scan();
             var sequence = History.BeginFrame(clock, SlotCount, StreamCount);
-            // The first scan finds the whole scene: that is the start of the recording, not an event.
             if (_appeared > 0 && Options.MarkLifecycle && _capturedFrames > 1)
                 Markers.Add(MarkerKind.Spawn, LifecycleText.Appeared(_appeared), string.Empty, sequence, clock.RealTime);
             Schedule();
         }
 
-        /// <summary>
-        /// Finishes the pending frame: waits for the job, records deaths and values, and closes the frame.
-        /// Safe to call at any time; does nothing when no frame is pending.
-        /// </summary>
         public void Commit()
         {
             if (!_pending)
@@ -134,21 +119,18 @@ namespace Nekuzaky.Hindsight.Editor
             History.EndFrame(_counters[RecorderCounters.Written], _counters[RecorderCounters.Moved], _last, SlotCount, _values, StreamCount);
         }
 
-        /// <summary>Captures one whole frame synchronously. Used by tests and the benchmark.</summary>
         public void CaptureNow(in FrameClock clock)
         {
             EndFrame(clock);
             Commit();
         }
 
-        /// <summary>One transform per kept frame for a slot, oldest first. Safe to call while a frame is pending.</summary>
         public int ExtractSlot(int slot, TransformSample[] output)
         {
             Commit();
             return History.ExtractSlot(slot, output);
         }
 
-        /// <summary>One value per kept frame for a stream, oldest first. Safe to call while a frame is pending.</summary>
         public int ExtractStream(int stream, Vector4[] output)
         {
             Commit();

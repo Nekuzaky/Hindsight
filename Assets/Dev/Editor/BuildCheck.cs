@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Dev
 {
-    /// <summary>
-    /// Builds the demo as a Windows player, to check that Hindsight never gets in the way of a build.
-    /// Run it with Tools/Build-Check.ps1, which then inspects the player's assemblies and runs it.
-    /// </summary>
     internal static class BuildCheck
     {
         public const string Output = "Tools/Output/build/HindsightDemo.exe";

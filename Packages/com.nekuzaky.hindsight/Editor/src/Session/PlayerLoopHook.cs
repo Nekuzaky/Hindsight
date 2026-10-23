@@ -4,11 +4,6 @@ using UnityEngine.PlayerLoop;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Adds Hindsight's callbacks to Unity's player loop: one at the start of a frame, which collects the previous
-    /// capture, one right after LateUpdate, which schedules the capture so it runs while the frame renders, and one
-    /// at the very end of the frame. No GameObject is added to your scene.
-    /// </summary>
     internal static class PlayerLoopHook
     {
         #region Private and Protected
@@ -85,7 +80,6 @@ namespace Nekuzaky.Hindsight.Editor
             return false;
         }
 
-        /// <summary>Removes Hindsight's systems from every phase. The loop is two levels deep, so no recursion.</summary>
         private static void Remove(ref PlayerLoopSystem loop)
         {
             var phases = loop.subSystemList;

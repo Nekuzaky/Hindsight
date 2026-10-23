@@ -7,11 +7,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The recording: frame records, transform and value deltas, and periodic checkpoints.
-    /// The oldest kept frame is always a checkpoint, so any kept frame can be rebuilt from at most one
-    /// checkpoint plus a short run of deltas. Memory is fixed when the session starts.
-    /// </summary>
     internal sealed class History : IDisposable
     {
         #region Public
@@ -25,7 +20,6 @@ namespace Nekuzaky.Hindsight.Editor
             _checkpoints = new CheckpointStore(maxCheckpoints);
         }
 
-        /// <summary>Transform blocks, one per frame that moved something. See <see cref="TransformCodec"/>.</summary>
         public DeltaRing<uint> Transforms { get; }
 
         public DeltaRing<ValueDelta> Values { get; }
@@ -36,7 +30,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public int OldestSequence { get; private set; }
 
-        /// <summary>Newest committed frame, or <see cref="OldestSequence"/> - 1 when empty.</summary>
         public int NewestSequence => _next - 1;
 
         public int FrameCount => _next - OldestSequence;
@@ -49,7 +42,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public int CheckpointCount => _checkpoints.Count;
 
-        /// <summary>Raised when old frames are dropped; the argument is the new oldest sequence.</summary>
         public event Action<int> Trimmed;
 
         public long SizeInBytes => Transforms.SizeInBytes + Values.SizeInBytes + _checkpoints.SizeInBytes
@@ -57,7 +49,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public double Duration => IsEmpty ? 0d : Frame(NewestSequence).RealTime - Frame(OldestSequence).RealTime;
 
-        /// <summary>Bytes holding kept frames: live deltas plus checkpoints. Always at most <see cref="SizeInBytes"/>.</summary>
         public long UsedBytes => (long)Transforms.Count * RecorderOptions.TransformWordBytes
             + (long)Values.Count * RecorderOptions.ValueDeltaBytes + _checkpoints.SizeInBytes
             + (long)FrameCount * FrameRecordBytes;
@@ -85,7 +76,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public bool Contains(int sequence) => sequence >= OldestSequence && sequence < _next;
 
-        /// <summary>The kept frame whose clock is closest to <paramref name="realTime"/>, or -1 when empty.</summary>
         public int SequenceNearest(double realTime)
         {
             if (IsEmpty)
@@ -112,7 +102,6 @@ namespace Nekuzaky.Hindsight.Editor
             return ref _frames[sequence % _frames.Length];
         }
 
-        /// <summary>Opens the frame the transform job is about to write, after making room for it.</summary>
         public int BeginFrame(in FrameClock clock, int slotCount, int streamCount)
         {
             Debug.Assert(!HasOpenFrame, "The previous frame was never committed.");
@@ -142,9 +131,6 @@ namespace Nekuzaky.Hindsight.Editor
             Values.Append(new ValueDelta { Stream = stream, Value = value });
         }
 
-        /// <summary>Closes the open frame and takes a checkpoint when one is due.</summary>
-        /// <param name="transformWords">Words of the transform block written at the ring head.</param>
-        /// <param name="moved">Entries in that block.</param>
         public void EndFrame(int transformWords, int moved, NativeArray<TransformSample> state, int slotCount,
             NativeArray<Vector4> values, int streamCount)
         {
@@ -165,7 +151,6 @@ namespace Nekuzaky.Hindsight.Editor
                 TakeCheckpoint(sequence, frame.RealTime, state, slotCount, values, streamCount);
         }
 
-        /// <summary>Rebuilds every slot and stream at <paramref name="sequence"/>. Unknown ones come out unset.</summary>
         public bool Seek(int sequence, NativeArray<TransformSample> transforms, int slotCount,
             NativeArray<Vector4> values, int streamCount)
         {
@@ -201,7 +186,6 @@ namespace Nekuzaky.Hindsight.Editor
             return true;
         }
 
-        /// <summary>One transform per kept frame for a single slot, oldest first. Returns the number written.</summary>
         public int ExtractSlot(int slot, TransformSample[] output)
         {
             if (IsEmpty || _checkpoints.Count == 0)
@@ -221,7 +205,6 @@ namespace Nekuzaky.Hindsight.Editor
             return count;
         }
 
-        /// <summary>One value per kept frame for a single stream, oldest first. Returns the number written.</summary>
         public int ExtractStream(int stream, Vector4[] output)
         {
             if (IsEmpty || _checkpoints.Count == 0)
@@ -260,10 +243,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>
-        /// Forgets every frame after <paramref name="sequence"/>, which becomes the newest one; the next frame
-        /// takes a checkpoint. Used to resume the game from a past frame.
-        /// </summary>
         public void TruncateAfter(int sequence)
         {
             Debug.Assert(!HasOpenFrame, "Commit the pending frame before truncating.");
@@ -276,10 +255,6 @@ namespace Nekuzaky.Hindsight.Editor
             _lastCheckpointTime = double.NegativeInfinity;
         }
 
-        /// <summary>
-        /// Applies entry <paramref name="entry"/> of a frame to <paramref name="states"/>, for walks that follow every
-        /// object frame by frame. Returns the slot it belongs to.
-        /// </summary>
         public int ApplyEntry(in FrameRecord frame, int entry, NativeArray<TransformSample> states)
         {
             Debug.Assert(entry >= 0 && entry < frame.TransformCount, "Entry outside the frame.");
@@ -309,7 +284,6 @@ namespace Nekuzaky.Hindsight.Editor
             _checkpoints.Dispose();
         }
 
-        /// <summary>Writes every kept frame, delta and checkpoint. The frame must not be open.</summary>
         public void WriteTo(BinaryWriter writer, byte[] buffer)
         {
             Debug.Assert(!HasOpenFrame, "Commit the pending frame before saving.");
@@ -379,7 +353,6 @@ namespace Nekuzaky.Hindsight.Editor
         {
             return _checkpoints.Count == 0
                 || realTime - _lastCheckpointTime >= CheckpointInterval
-                // Transform blocks are compact, so this bound keeps seeks short when frames come very fast.
                 || Transforms.Head - _transformsAtCheckpoint >= Transforms.Capacity / 32
                 || Values.Head - _valuesAtCheckpoint >= Values.Capacity / 8
                 || sequence - _sequenceAtCheckpoint >= _frames.Length / 8;
@@ -400,7 +373,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         private void MakeRoom(long transformNeed, int streamNeed, double now)
         {
-            // Every pass drops one checkpoint, so the loop is bounded by the checkpoint count.
             var passes = _checkpoints.Count;
             for (var pass = 0; pass < passes; pass++)
             {
@@ -435,10 +407,8 @@ namespace Nekuzaky.Hindsight.Editor
             Trimmed?.Invoke(OldestSequence);
         }
 
-        /// <summary>Index of the slot's entry in a frame, or -1 when it did not move.</summary>
         private int FindEntry(in FrameRecord frame, int slot)
         {
-            // Entries inside a frame are written in slot order, so a binary search finds the slot.
             int low = 0, high = frame.TransformCount - 1;
             while (low <= high)
             {
@@ -457,7 +427,6 @@ namespace Nekuzaky.Hindsight.Editor
         #endregion
     }
 
-    /// <summary>Walks the value ring frame by frame and outputs the latest value of one stream per frame.</summary>
     [BurstCompile]
     internal struct ExtractStreamJob : IJob
     {

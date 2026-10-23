@@ -3,14 +3,6 @@ using Unity.Mathematics;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Lossless layout of the transform ring. Each frame that moved something writes one block of 32-bit words:
-    /// <code>[entry count][block words] then [slot][meta] per entry, in slot order, then the payload</code>
-    /// The meta word holds which of the ten components changed (position xyz, rotation xyzw, scale xyz) and where
-    /// the entry's payload starts; the payload holds only the changed components, bit for bit. An object sliding on
-    /// a plane costs 16 bytes per frame instead of 44, and entries keep a fixed stride so a slot is found by binary
-    /// search.
-    /// </summary>
     internal static class TransformCodec
     {
         #region Public
@@ -21,12 +13,10 @@ namespace Nekuzaky.Hindsight.Editor
         public const int EntryWords = 2;
         public const int MaxWordsPerSlot = EntryWords + ComponentCount;
 
-        /// <summary>Largest payload offset the meta word can hold, which bounds the slots one frame may write.</summary>
         public const int MaxPayloadOffset = (1 << (32 - ComponentCount)) - 1;
 
         public const int MaxSlots = MaxPayloadOffset / ComponentCount;
 
-        /// <summary>Words a frame may need at most, reserved before its capture is scheduled.</summary>
         public static long WorstCaseWords(int slotCount) => HeaderWords + (long)slotCount * MaxWordsPerSlot;
 
         #endregion
@@ -34,7 +24,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Bit i is set when component i differs. NaN always differs, so an unset sample yields a full mask.</summary>
         public static int Diff(in TransformSample current, in TransformSample last)
         {
             var mask = 0;
@@ -55,7 +44,6 @@ namespace Nekuzaky.Hindsight.Editor
             return (int)ring[Index(ring, block + HeaderWords + (long)entry * EntryWords)];
         }
 
-        /// <summary>Writes the components entry <paramref name="entry"/> of a block changed into <paramref name="state"/>.</summary>
         public static void ApplyEntry(NativeArray<uint> ring, long block, int entry, ref TransformSample state)
         {
             var entries = EntryCount(ring, block);
@@ -71,10 +59,8 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>Applies every entry of a block to the slot states. Entries past <paramref name="slotCount"/> are skipped.</summary>
         public static void ApplyBlock(NativeArray<uint> ring, long block, NativeArray<TransformSample> states, int slotCount)
         {
-            // Payloads follow each other in entry order, so both cursors only move forward: one modulo per block.
             var length = ring.Length;
             var entries = EntryCount(ring, block);
             var entry = Index(ring, block + HeaderWords);
@@ -143,10 +129,6 @@ namespace Nekuzaky.Hindsight.Editor
         #endregion
     }
 
-    /// <summary>
-    /// Writes one block of the transform ring. The entry count must be known first: entries have a fixed place
-    /// right after the header and the payload follows them. Runs inside Burst jobs, so callers check the counts.
-    /// </summary>
     internal struct TransformBlockWriter
     {
         #region Public
@@ -176,7 +158,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Adds the components of <paramref name="value"/> that differ from <paramref name="last"/>.</summary>
         public void Add(int slot, in TransformSample value, in TransformSample last)
         {
             var mask = TransformCodec.Diff(value, last);
@@ -196,7 +177,6 @@ namespace Nekuzaky.Hindsight.Editor
             _written++;
         }
 
-        /// <summary>Writes the header and returns the words the block takes, or 0 when nothing moved.</summary>
         public int Finish()
         {
             if (_entries == 0)

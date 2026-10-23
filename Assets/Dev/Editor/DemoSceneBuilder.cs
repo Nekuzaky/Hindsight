@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Dev
 {
-    /// <summary>Writes Assets/Demo/Hindsight Demo.unity: a camera and the bootstrap that builds the rest at runtime.</summary>
     internal static class DemoSceneBuilder
     {
         public const string ScenePath = "Assets/Demo/Hindsight Demo.unity";

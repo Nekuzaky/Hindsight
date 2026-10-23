@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Demo
 {
-    /// <summary>
-    /// A bouncing ball. Its bounce count and heat are recorded by Hindsight thanks to [HindsightTrack].
-    /// When it leaves the world through the floor it logs an error, which shows up as a red marker on the timeline.
-    /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     public sealed class DemoBall : MonoBehaviour
     {
@@ -48,7 +44,6 @@ namespace Nekuzaky.Hindsight.Demo
             if (transform.position.y >= KillHeight)
                 return;
 
-            // The ball stays in the scene, frozen below the floor, so you can select it and rewind to its fall.
             var kind = IsComet ? "Comet" : "Ball";
             var speed = _fastestSpeed.ToString("0.0", CultureInfo.InvariantCulture);
             Debug.LogError($"{kind} #{Number} fell through the floor at {speed} m/s. Its Rigidbody2D uses Discrete collision detection, so at this speed it skips over the floor between two physics steps.");

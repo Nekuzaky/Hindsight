@@ -63,7 +63,6 @@ namespace Nekuzaky.Hindsight.Tests
                 Capture(frame);
             }
 
-            // Like the window does while the game runs: a capture job is scheduled and not collected yet.
             cubes[0].transform.position = new Vector3(42f, 0f, 0f);
             _recorder.EndFrame(new FrameClock(5, 5 / 60d, 5 / 60d, 1f));
             Assert.IsTrue(_recorder.HasPendingFrame);
@@ -163,7 +162,6 @@ namespace Nekuzaky.Hindsight.Tests
             Start();
             Capture(0);
 
-            // Same count and same last child: only the sweep can notice the replacement.
             Object.DestroyImmediate(first);
             var replacement = new GameObject("Replacement");
             _created.Add(replacement);

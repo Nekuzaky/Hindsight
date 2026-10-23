@@ -13,7 +13,6 @@ namespace Nekuzaky.Hindsight.Editor
         public const byte Invalid = 2;
     }
 
-    /// <summary>Reads every tracked transform on worker threads and flags the ones that moved.</summary>
     [BurstCompile]
     internal struct CaptureTransformsJob : IJobParallelForTransform
     {
@@ -36,11 +35,6 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>
-    /// Writes the changed components of the moved transforms into the ring as one block (see
-    /// <see cref="TransformCodec"/>), reports destroyed objects and lists the slots whose velocity should be sampled
-    /// (moved this frame or the frame before).
-    /// </summary>
     [BurstCompile]
     internal struct PackTransformsJob : IJob
     {
@@ -109,7 +103,6 @@ namespace Nekuzaky.Hindsight.Editor
         public const int Length = 4;
     }
 
-    /// <summary>Copies the live transforms, used to come back to the present after rewinding.</summary>
     [BurstCompile]
     internal struct ReadTransformsJob : IJobParallelForTransform
     {
@@ -128,7 +121,6 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>Moves objects to a recorded state. Slots with a zero mask or an unset sample are left alone.</summary>
     [BurstCompile]
     internal struct ApplyTransformsJob : IJobParallelForTransform
     {
@@ -149,7 +141,6 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>Replays a contiguous run of transform blocks on top of a checkpoint.</summary>
     [BurstCompile]
     internal struct ReplayTransformsJob : IJob
     {
@@ -161,7 +152,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public void Execute()
         {
-            // A block is never shorter than its header, so the walk ends within (End - Start) / 2 steps.
             var block = Start;
             for (var step = 0L; step < End - Start && block < End; step++)
             {
@@ -171,7 +161,6 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>Replays a contiguous range of value deltas on top of a checkpoint.</summary>
     [BurstCompile]
     internal struct ReplayValuesJob : IJob
     {

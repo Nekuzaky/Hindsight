@@ -2,7 +2,6 @@ using UnityEditor;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Moves the displayed frame. Shared by the window, the Scene view overlay and the shortcuts.</summary>
     internal static class Navigation
     {
         #region Public
@@ -58,7 +57,6 @@ namespace Nekuzaky.Hindsight.Editor
             HindsightSession.ReturnToLive();
         }
 
-        /// <summary>Jumps to the newest event before the displayed frame.</summary>
         public static void PreviousEvent(MarkerFilter filter)
         {
             if (!CanNavigate)
@@ -77,7 +75,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>Jumps to the oldest event after the displayed frame.</summary>
         public static void NextEvent(MarkerFilter filter)
         {
             if (!CanNavigate)
@@ -105,7 +102,6 @@ namespace Nekuzaky.Hindsight.Editor
         #endregion
     }
 
-    /// <summary>Which kinds of event are visible and reachable with previous / next.</summary>
     internal struct MarkerFilter
     {
         public bool Errors;

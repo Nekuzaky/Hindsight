@@ -5,11 +5,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The timeline: a ruler, a lane of events and a lane showing how much moved on each frame, with the playhead.
-    /// Click or drag to rewind, click an event to jump to it, scroll to zoom, middle-drag or Shift+scroll to pan,
-    /// double-click to see everything.
-    /// </summary>
     internal sealed class TimelineView : VisualElement
     {
         #region Public
@@ -42,10 +37,8 @@ namespace Nekuzaky.Hindsight.Editor
 
         public MarkerFilter Filter { get; set; } = MarkerFilter.All;
 
-        /// <summary>A frame was picked by clicking or dragging.</summary>
         public event Action<int> FrameRequested;
 
-        /// <summary>An event marker was clicked.</summary>
         public event Action<int> MarkerClicked;
 
         #endregion
@@ -74,7 +67,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Recomputes the activity lane and redraws. Cheap enough to call several times a second.</summary>
         public void Invalidate()
         {
             ComputeColumns();

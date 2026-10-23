@@ -10,11 +10,6 @@ using Object = UnityEngine.Object;
 
 namespace Nekuzaky.Hindsight.Dev
 {
-    /// <summary>
-    /// Records the README media from the real editor: plays the demo, waits for a comet to fall through the floor,
-    /// pauses, rewinds to it and scrubs across the fall while saving frames, then captures the preferences.
-    /// Run it with Tools/Capture-Media.ps1. The editor window must stay visible while it runs.
-    /// </summary>
     [InitializeOnLoad]
     internal static class MediaCapture
     {
@@ -64,7 +59,6 @@ namespace Nekuzaky.Hindsight.Dev
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
 
-        /// <summary>Entry point for -executeMethod.</summary>
         public static void Run()
         {
             _output = Path.Combine(Directory.GetCurrentDirectory(), "Tools", "Output", "media");
@@ -159,7 +153,6 @@ namespace Nekuzaky.Hindsight.Dev
             if (!Due())
                 return;
 
-            // Frames where the comet is on screen are captured several times, for a slow-motion effect.
             CaptureFrame();
             var cometVisible = _shown >= _birth && _shown <= _target;
             if (cometVisible && ++_repeats < SlowMotionRepeats)
@@ -199,7 +192,6 @@ namespace Nekuzaky.Hindsight.Dev
                 return;
             if (_stageStart <= 0d)
             {
-                // The floating capture windows would cover the preferences, so they go first.
                 CloseCaptureWindows();
                 _stageStart = EditorApplication.timeSinceStartup;
                 SettingsService.OpenUserPreferences(HindsightPreferences.Path);
@@ -298,7 +290,6 @@ namespace Nekuzaky.Hindsight.Dev
             Object.DestroyImmediate(texture);
         }
 
-        /// <summary>Reads the window's pixels from the screen. The window must be visible and not covered.</summary>
         private static Texture2D Grab(EditorWindow window)
         {
             var rect = window.position;
@@ -325,7 +316,6 @@ namespace Nekuzaky.Hindsight.Dev
             return null;
         }
 
-        /// <summary>Closes every Hindsight window and every floating Scene view left by a previous capture.</summary>
         private static void CloseCaptureWindows()
         {
             foreach (var window in Resources.FindObjectsOfTypeAll<HindsightWindow>())

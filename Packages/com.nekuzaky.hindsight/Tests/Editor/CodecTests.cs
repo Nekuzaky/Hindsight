@@ -37,7 +37,6 @@ namespace Nekuzaky.Hindsight.Tests
                 var shrunk = Origin;
                 shrunk.Scale = new Vector3(-0f, 0.5f, float.Epsilon);
 
-                // Start near the end of the ring so the block wraps around.
                 var writer = new TransformBlockWriter(ring, 60, 2);
                 writer.Add(0, spun, Origin);
                 writer.Add(2, shrunk, Origin);

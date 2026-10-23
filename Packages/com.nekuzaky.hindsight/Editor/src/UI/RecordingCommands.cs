@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Save and open dialogs for recordings, shared by the window and the menu.</summary>
     internal static class RecordingCommands
     {
         #region Public

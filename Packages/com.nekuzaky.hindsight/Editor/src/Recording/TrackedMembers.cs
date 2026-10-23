@@ -23,7 +23,6 @@ namespace Nekuzaky.Hindsight.Editor
         AngularVelocity2D
     }
 
-    /// <summary>A field Hindsight samples every frame, with a compiled getter that never allocates.</summary>
     internal sealed class TrackedMember
     {
         public TrackedMember(string key, string label, ValueFormat format, Type enumType, Func<Component, Vector4> getter)
@@ -42,10 +41,6 @@ namespace Nekuzaky.Hindsight.Editor
         public Func<Component, Vector4> Getter { get; }
     }
 
-    /// <summary>
-    /// Finds the fields to sample: fields marked with <see cref="HindsightTrackAttribute"/> and fields pinned from the
-    /// Inspector. Getters are compiled once per field with expression trees.
-    /// </summary>
     internal static class TrackedMembers
     {
         #region Public
@@ -79,7 +74,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Tracked members of a component type, including inherited ones. Never null.</summary>
         public static TrackedMember[] For(Type type)
         {
             Debug.Assert(type != null, "A component type is required.");
@@ -91,7 +85,6 @@ namespace Nekuzaky.Hindsight.Editor
             return members;
         }
 
-        /// <summary>Forgets compiled getters, for example after pins change.</summary>
         public static void Invalidate()
         {
             Cache.Clear();
@@ -101,7 +94,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public static bool IsSupported(Type type) => TryGetFormat(type, out _);
 
-        /// <summary>Resolves a serialized property path such as <c>stats.health</c> to a chain of fields.</summary>
         public static bool TryResolvePath(Type type, string path, List<FieldInfo> chain)
         {
             chain.Clear();

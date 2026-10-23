@@ -5,10 +5,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Full copies of the recorded state taken every second or so, so seeking never replays more than a short
-    /// stretch of deltas. Buffers are reused when old checkpoints are dropped.
-    /// </summary>
     internal sealed class CheckpointStore : IDisposable
     {
         #region Public
@@ -90,7 +86,6 @@ namespace Nekuzaky.Hindsight.Editor
             Count++;
         }
 
-        /// <summary>Drops the checkpoints taken after <paramref name="sequence"/>.</summary>
         public void RemoveAfter(int sequence)
         {
             for (var guard = Count; guard > 0 && Count > 0 && SequenceAt(Count - 1) > sequence; guard--)
@@ -110,7 +105,6 @@ namespace Nekuzaky.Hindsight.Editor
             Count = 0;
         }
 
-        /// <summary>Index of the newest checkpoint taken at or before <paramref name="sequence"/>, or -1.</summary>
         public int FindAtOrBefore(int sequence)
         {
             int low = 0, high = Count - 1, found = -1;
@@ -130,7 +124,6 @@ namespace Nekuzaky.Hindsight.Editor
             return found;
         }
 
-        /// <summary>Writes the checkpoint into the output buffers; slots created after it are reset to unset.</summary>
         public void CopyTo(int index, NativeArray<TransformSample> transforms, int slotCount,
             NativeArray<Vector4> values, int streamCount)
         {

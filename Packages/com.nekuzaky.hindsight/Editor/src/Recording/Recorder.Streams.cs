@@ -12,9 +12,6 @@ namespace Nekuzaky.Hindsight.Editor
         Field
     }
 
-    // Streams: values sampled on the main thread. Each Rigidbody gets a linear and an angular velocity stream,
-    // and each tracked field of each component gets one stream. Streams die with their object and are reused
-    // like slots.
     internal sealed partial class Recorder
     {
         #region Public
@@ -26,7 +23,6 @@ namespace Nekuzaky.Hindsight.Editor
         public Type EnumTypeOf(int stream) => _streamEnum[stream];
         public bool StreamExistedAt(int stream, int sequence) => _streamBirth[stream] <= sequence && sequence < _streamDeath[stream];
 
-        /// <summary>Streams attached to a slot's current object, velocities first.</summary>
         public int GetStreams(int slot, List<int> output)
         {
             output.Clear();
@@ -306,7 +302,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         private void SampleFields(int sequence)
         {
-            // Iterates backwards because a dead component removes its stream by swapping with the last one.
             for (var i = _activeFieldCount - 1; i >= 0; i--)
             {
                 var stream = _activeFields[i];

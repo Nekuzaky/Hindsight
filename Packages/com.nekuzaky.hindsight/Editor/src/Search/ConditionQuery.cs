@@ -14,10 +14,6 @@ namespace Nekuzaky.Hindsight.Editor
         NotEqual
     }
 
-    /// <summary>
-    /// A condition such as <c>y &lt; -5</c>, <c>speed &gt; 20</c>, <c>Health &lt;= 0</c> or <c>any y &lt; -10</c>.
-    /// The channel names a value of the selected object; <c>any</c> searches the position of every object.
-    /// </summary>
     internal readonly struct ConditionQuery
     {
         #region Public
@@ -50,7 +46,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>Reads a condition. Returns false with a readable reason when the text is not one.</summary>
         public static bool TryParse(string text, out ConditionQuery query, out string error)
         {
             query = default;

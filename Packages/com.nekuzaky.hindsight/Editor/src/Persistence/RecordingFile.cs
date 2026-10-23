@@ -6,10 +6,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The <c>.hindsight</c> file: a header, then the recorder's history, events, objects and values, exactly as
-    /// they were in memory. Saving writes a temporary file first, so a failed save never damages an existing one.
-    /// </summary>
     internal static class RecordingFile
     {
         #region Public
@@ -30,7 +26,6 @@ namespace Nekuzaky.Hindsight.Editor
             public string SavedAt { get; }
         }
 
-        /// <summary>A file name for a recording saved now, such as <c>Recording 2026-10-23 14-05-12.hindsight</c>.</summary>
         public static string DefaultName => $"Recording {DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss", CultureInfo.InvariantCulture)}.{Extension}";
 
         public static void Save(Recorder recorder, string path)
@@ -60,7 +55,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>Reads a recording. Throws <see cref="InvalidDataException"/> when the file is not a valid one.</summary>
         public static Recorder Load(string path, out Header header)
         {
             using var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, NativeIO.BufferBytes);
@@ -80,7 +74,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Private and Protected
 
-        /// <summary>"HSGT" read as a little-endian integer.</summary>
         private const uint Magic = 0x54475348;
 
         private const int FormatVersion = 1;

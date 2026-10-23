@@ -3,16 +3,10 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    // Resuming from a past frame: the scene already shows that frame; the recording forgets what came after it and
-    // carries on from there, and Rigidbodies get the velocities they had.
     internal sealed partial class Recorder
     {
         #region Public
 
-        /// <summary>
-        /// Makes <paramref name="sequence"/> the newest frame. <paramref name="states"/> and <paramref name="values"/>
-        /// hold that frame, as rebuilt by the rewind; the scene must show it already.
-        /// </summary>
         public void ResumeAt(int sequence, NativeArray<TransformSample> states, NativeArray<Vector4> values)
         {
             Debug.Assert(!IsFromFile, "A recording opened from a file cannot be resumed.");
@@ -25,7 +19,6 @@ namespace Nekuzaky.Hindsight.Editor
                 ResumeStream(stream, sequence, values);
         }
 
-        /// <summary>Gives every Rigidbody and Rigidbody2D that existed at that frame the velocity it had then.</summary>
         public void RestoreVelocities(int sequence, NativeArray<Vector4> values)
         {
             Physics.SyncTransforms();
@@ -66,7 +59,6 @@ namespace Nekuzaky.Hindsight.Editor
             _moving[slot] = 0;
             if (_birth[slot] > sequence)
             {
-                // Appeared after that frame: its story starts again with the next frame, written whole.
                 _birth[slot] = next;
                 if (_death[slot] != Alive)
                     _death[slot] = next;
@@ -75,7 +67,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
 
             _last[slot] = states[slot];
-            // Destroyed after that frame: it cannot come back, so it disappears with the next frame.
             if (_death[slot] != Alive && _death[slot] > sequence)
                 _death[slot] = next;
         }

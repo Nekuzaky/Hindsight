@@ -7,7 +7,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Preferences > Hindsight. Every option, with a line explaining what it changes.</summary>
     internal static class HindsightPreferences
     {
         #region Public

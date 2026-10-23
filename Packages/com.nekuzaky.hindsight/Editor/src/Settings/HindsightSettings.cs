@@ -14,7 +14,6 @@ namespace Nekuzaky.Hindsight.Editor
         Hz15 = 15
     }
 
-    /// <summary>A field pinned from the Inspector, recorded on every component of that type.</summary>
     [Serializable]
     internal struct TrackedPin
     {
@@ -28,10 +27,6 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>
-    /// Per-user settings, saved in UserSettings/HindsightSettings.asset so they stay out of version control.
-    /// Every setter clamps its value, so the recorder never sees an invalid configuration.
-    /// </summary>
     [FilePath("UserSettings/HindsightSettings.asset", FilePathAttribute.Location.ProjectFolder)]
     internal sealed class HindsightSettings : ScriptableSingleton<HindsightSettings>
     {

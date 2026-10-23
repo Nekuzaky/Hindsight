@@ -6,10 +6,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// The selected object at the displayed frame: transform, velocities and tracked values, plus a graph of one of
-    /// them over the whole recording.
-    /// </summary>
     internal sealed class InspectorPanel : VisualElement
     {
         #region Public
@@ -43,7 +39,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public event Action<int> FrameRequested;
 
-        /// <summary>Raised with a message to show, for example after copying a transform.</summary>
         public event Action<string> Notify;
 
         #endregion

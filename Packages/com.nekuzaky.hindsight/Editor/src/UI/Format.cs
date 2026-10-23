@@ -4,14 +4,12 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Text formatting for the UI. Always uses the invariant culture so numbers read the same everywhere.</summary>
     internal static class Format
     {
         #region Public
 
         public static readonly CultureInfo Culture = CultureInfo.InvariantCulture;
 
-        /// <summary>Signed offset from now, for example "-2.315 s" or "now".</summary>
         public static string Offset(double seconds)
         {
             if (Math.Abs(seconds) < 0.0005d)
@@ -19,7 +17,6 @@ namespace Nekuzaky.Hindsight.Editor
             return seconds.ToString(Math.Abs(seconds) >= 100d ? "0.0" : "0.000", Culture) + " s";
         }
 
-        /// <summary>Short label for a ruler tick, using as many decimals as the tick step needs.</summary>
         public static string Tick(double seconds, double step)
         {
             if (Math.Abs(seconds) < step * 0.25d)
@@ -52,7 +49,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         public static string Vector(Vector2 value) => $"{Number(value.x)}, {Number(value.y)}";
 
-        /// <summary>Formats a recorded value the way its source field reads.</summary>
         public static string Value(Vector4 value, ValueFormat format, Type enumType)
         {
             if (!ValueSample.IsSet(value))
@@ -85,7 +81,6 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        /// <summary>The single number a graph plots for a value.</summary>
         public static float Scalar(Vector4 value, ValueFormat format)
         {
             switch (format)

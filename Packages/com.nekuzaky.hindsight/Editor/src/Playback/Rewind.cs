@@ -6,10 +6,6 @@ using UnityEngine.Jobs;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// Puts the scene back the way it was at a recorded frame while the game is paused, and restores the live
-    /// state afterwards. Objects that did not exist yet are hidden; nothing else in the game is touched.
-    /// </summary>
     internal sealed class Rewind : IDisposable
     {
         #region Public
@@ -20,28 +16,23 @@ namespace Nekuzaky.Hindsight.Editor
             _recorder = recorder;
         }
 
-        /// <summary>True while the scene shows a past frame.</summary>
         public bool IsActive { get; private set; }
 
-        /// <summary>The frame the scene shows: the rewound one, or the newest one when live.</summary>
         public int Sequence => IsActive ? _sequence : _recorder.History.NewestSequence;
 
         public bool HideObjectsNotYetSpawned { get; set; } = true;
 
-        /// <summary>Transforms of every slot at <see cref="Sequence"/>. Safe to read while the game runs.</summary>
         public NativeArray<TransformSample> Transforms
         {
             get
             {
                 if (IsActive)
                     return _shown;
-                // The capture job of the current frame may still own the live state: finish it first.
                 _recorder.Commit();
                 return _recorder.State;
             }
         }
 
-        /// <summary>Values of every stream at <see cref="Sequence"/>. Safe to read while the game runs.</summary>
         public NativeArray<Vector4> Values
         {
             get
@@ -75,7 +66,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Shows a recorded frame. Returns false when the frame is no longer in the history.</summary>
         public bool Show(int sequence)
         {
             _recorder.Commit();
@@ -101,7 +91,6 @@ namespace Nekuzaky.Hindsight.Editor
             return true;
         }
 
-        /// <summary>Puts every object back where it was before rewinding. Does nothing when already live.</summary>
         public void ReturnToLive()
         {
             if (!IsActive)
@@ -114,10 +103,6 @@ namespace Nekuzaky.Hindsight.Editor
             Changed?.Invoke();
         }
 
-        /// <summary>
-        /// Makes the shown frame the live scene: objects stay where they are and hidden objects show again.
-        /// Used to resume the game from a past frame.
-        /// </summary>
         public void Adopt()
         {
             if (!IsActive)

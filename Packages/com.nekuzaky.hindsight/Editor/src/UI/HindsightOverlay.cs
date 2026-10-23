@@ -5,7 +5,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Scene view overlay: recording status, how far back the scene is, and frame controls.</summary>
     [Overlay(typeof(SceneView), Id, "Hindsight", true)]
     [Icon(IconPath)]
     internal sealed class HindsightOverlay : Overlay

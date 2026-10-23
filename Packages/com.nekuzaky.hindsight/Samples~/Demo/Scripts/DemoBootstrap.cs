@@ -3,11 +3,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Demo
 {
-    /// <summary>
-    /// Builds the whole demo when Play Mode starts: a box, a spinning paddle, and balls that keep spawning.
-    /// Every seventh ball is a comet launched so fast that it always tunnels through the floor. Everything is created in
-    /// code, with generated sprites and an unlit material, so the scene works with any render pipeline.
-    /// </summary>
     public sealed class DemoBootstrap : MonoBehaviour
     {
         #region Inspector
@@ -113,10 +108,6 @@ namespace Nekuzaky.Hindsight.Demo
             }
         }
 
-        /// <summary>
-        /// Height that makes a comet skip the floor: one physics step lands it just above the floor's collision
-        /// band and the next one just below, so Discrete collision detection never sees the overlap.
-        /// </summary>
         private float CometSpawnHeight()
         {
             var dt = Time.fixedDeltaTime;
@@ -178,7 +169,6 @@ namespace Nekuzaky.Hindsight.Demo
 
         private static Material CreateMaterial()
         {
-            // Unlit, so the demo looks the same with URP, HDRP or the built-in pipeline and needs no light.
             string[] candidates = { "Universal Render Pipeline/2D/Sprite-Unlit-Default", "Universal Render Pipeline/Unlit", "Sprites/Default" };
             foreach (var name in candidates)
             {

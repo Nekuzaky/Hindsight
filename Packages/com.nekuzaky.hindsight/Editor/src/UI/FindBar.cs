@@ -4,10 +4,6 @@ using UnityEngine.UIElements;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>
-    /// "Find when": type a condition and jump to the frame where it becomes true. Enter searches forward from the
-    /// displayed frame (from the start when live), Shift+Enter searches backward.
-    /// </summary>
     internal sealed class FindBar : VisualElement
     {
         #region Public

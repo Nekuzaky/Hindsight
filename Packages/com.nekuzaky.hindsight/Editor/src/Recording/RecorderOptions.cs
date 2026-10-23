@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Snapshot of the settings a recording session starts with.</summary>
     internal readonly struct RecorderOptions
     {
         #region Public
@@ -41,13 +40,10 @@ namespace Nekuzaky.Hindsight.Editor
         public int LayerMask { get; }
         public bool MarkLifecycle { get; }
 
-        /// <summary>70 % of the budget goes to transform deltas, 15 % to values; checkpoints use the rest.</summary>
-        /// <summary>Words of the transform ring (see <see cref="TransformCodec"/>).</summary>
         public int TransformCapacity => Clamp(MemoryBudgetBytes * 70 / 100 / TransformWordBytes);
 
         public int ValueCapacity => Clamp(MemoryBudgetBytes * 15 / 100 / ValueDeltaBytes);
 
-        /// <summary>Slots are capped so a frame where every object moves always fits in a quarter of the ring.</summary>
         public int SlotLimit => Mathf.Max(1, Mathf.Min(Mathf.Min(MaxObjects, TransformCodec.MaxSlots), TransformCapacity / 4 / TransformCodec.MaxWordsPerSlot - 1));
 
         public int StreamLimit => Mathf.Max(1, ValueCapacity / 4);
@@ -75,7 +71,6 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Main API
 
-        /// <summary>Options sized to hold a recording read from a file, whatever the current settings are.</summary>
         public static RecorderOptions ForFile(double historySeconds, long transformWords, long valueEntries, int checkpoints, int slots)
         {
             var transformBudget = (transformWords + MinimumRingEntries) * TransformWordBytes * 100 / 70 + 1;

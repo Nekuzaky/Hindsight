@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
 {
-    /// <summary>Menu items, shortcuts and the Inspector's "Track in Hindsight" context menu.</summary>
     [InitializeOnLoad]
     internal static class HindsightCommands
     {
