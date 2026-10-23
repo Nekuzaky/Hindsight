@@ -195,8 +195,12 @@ namespace Nekuzaky.Hindsight.Dev
         private static void Animate(Scenario scenario)
         {
             var t = _frame * (1f / 60f);
+            // Bobbing and turning: three of the ten transform components change, as for a typical character.
             for (var i = 0; i < Movers.Count; i++)
-                Movers[i].localPosition = new Vector3(i % 100, i / 100 + Mathf.Sin(t * 2f + i * 0.01f), 0f);
+            {
+                Movers[i].SetLocalPositionAndRotation(new Vector3(i % 100, i / 100 + Mathf.Sin(t * 2f + i * 0.01f), 0f),
+                    Quaternion.Euler(0f, t * 90f + i, 0f));
+            }
 
             for (var i = 0; i < scenario.Churn; i++)
             {

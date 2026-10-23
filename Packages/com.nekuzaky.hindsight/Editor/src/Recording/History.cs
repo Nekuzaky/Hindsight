@@ -18,13 +18,14 @@ namespace Nekuzaky.Hindsight.Editor
         public History(int transformCapacity, int valueCapacity, int maxFrames, int maxCheckpoints)
         {
             Debug.Assert(maxFrames >= 64, "History needs room for at least a few frames.");
-            Transforms = new DeltaRing<TransformDelta>(transformCapacity);
+            Transforms = new DeltaRing<uint>(transformCapacity);
             Values = new DeltaRing<ValueDelta>(valueCapacity);
             _frames = new FrameRecord[maxFrames];
             _checkpoints = new CheckpointStore(maxCheckpoints);
         }
 
-        public DeltaRing<TransformDelta> Transforms { get; }
+        /// <summary>Transform blocks, one per frame that moved something. See <see cref="TransformCodec"/>.</summary>
+        public DeltaRing<uint> Transforms { get; }
 
         public DeltaRing<ValueDelta> Values { get; }
 
@@ -56,7 +57,7 @@ namespace Nekuzaky.Hindsight.Editor
         public double Duration => IsEmpty ? 0d : Frame(NewestSequence).RealTime - Frame(OldestSequence).RealTime;
 
         /// <summary>Bytes holding kept frames: live deltas plus checkpoints. Always at most <see cref="SizeInBytes"/>.</summary>
-        public long UsedBytes => (long)Transforms.Count * RecorderOptions.TransformDeltaBytes
+        public long UsedBytes => (long)Transforms.Count * RecorderOptions.TransformWordBytes
             + (long)Values.Count * RecorderOptions.ValueDeltaBytes + _checkpoints.SizeInBytes
             + (long)FrameCount * FrameRecordBytes;
 
@@ -114,10 +115,11 @@ namespace Nekuzaky.Hindsight.Editor
         public int BeginFrame(in FrameClock clock, int slotCount, int streamCount)
         {
             Debug.Assert(!HasOpenFrame, "The previous frame was never committed.");
-            Debug.Assert(slotCount <= Transforms.Capacity / 4, "Too many slots for the transform ring.");
+            var transformNeed = TransformCodec.WorstCaseWords(slotCount);
+            Debug.Assert(slotCount <= TransformCodec.MaxSlots && transformNeed <= Transforms.Capacity / 4, "Too many slots for the transform ring.");
             Debug.Assert(streamCount <= Values.Capacity / 4, "Too many streams for the value ring.");
 
-            MakeRoom(slotCount, streamCount, clock.RealTime);
+            MakeRoom(transformNeed, streamCount, clock.RealTime);
             ref var frame = ref _frames[_next % _frames.Length];
             frame = new FrameRecord
             {
@@ -140,14 +142,18 @@ namespace Nekuzaky.Hindsight.Editor
         }
 
         /// <summary>Closes the open frame and takes a checkpoint when one is due.</summary>
-        public void EndFrame(int transformsWritten, NativeArray<TransformSample> state, int slotCount,
+        /// <param name="transformWords">Words of the transform block written at the ring head.</param>
+        /// <param name="moved">Entries in that block.</param>
+        public void EndFrame(int transformWords, int moved, NativeArray<TransformSample> state, int slotCount,
             NativeArray<Vector4> values, int streamCount)
         {
             Debug.Assert(HasOpenFrame, "No open frame to commit.");
-            Transforms.Commit(transformsWritten);
+            Debug.Assert((transformWords == 0) == (moved == 0), "A block exists exactly when something moved.");
+            Transforms.Commit(transformWords);
 
             ref var frame = ref _frames[_next % _frames.Length];
-            frame.TransformCount = transformsWritten;
+            frame.TransformCount = moved;
+            frame.TransformWords = transformWords;
             frame.ValueCount = (int)(Values.Head - frame.ValueStart);
             frame.Committed = true;
             var sequence = _next;
@@ -179,7 +185,7 @@ namespace Nekuzaky.Hindsight.Editor
             {
                 Ring = Transforms.Items,
                 Start = first.TransformStart,
-                End = last.TransformStart + last.TransformCount,
+                End = last.TransformStart + last.TransformWords,
                 SlotCount = slotCount,
                 States = transforms
             }.Run();
@@ -206,8 +212,9 @@ namespace Nekuzaky.Hindsight.Editor
             for (var i = 1; i < count; i++)
             {
                 ref readonly var frame = ref Frame(OldestSequence + i);
-                if (TryFindSlot(frame, slot, out var value))
-                    state = value;
+                var entry = FindEntry(frame, slot);
+                if (entry >= 0)
+                    TransformCodec.ApplyEntry(Transforms.Items, frame.TransformStart, entry, ref state);
                 output[i] = state;
             }
             return count;
@@ -252,6 +259,22 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
+        /// <summary>
+        /// Applies entry <paramref name="entry"/> of a frame to <paramref name="states"/>, for walks that follow every
+        /// object frame by frame. Returns the slot it belongs to.
+        /// </summary>
+        public int ApplyEntry(in FrameRecord frame, int entry, NativeArray<TransformSample> states)
+        {
+            Debug.Assert(entry >= 0 && entry < frame.TransformCount, "Entry outside the frame.");
+            var slot = TransformCodec.SlotAt(Transforms.Items, frame.TransformStart, entry);
+            if (slot >= states.Length)
+                return slot;
+            var state = states[slot];
+            TransformCodec.ApplyEntry(Transforms.Items, frame.TransformStart, entry, ref state);
+            states[slot] = state;
+            return slot;
+        }
+
         public void Clear()
         {
             Transforms.Clear();
@@ -278,7 +301,8 @@ namespace Nekuzaky.Hindsight.Editor
         {
             return _checkpoints.Count == 0
                 || realTime - _lastCheckpointTime >= CheckpointInterval
-                || Transforms.Head - _transformsAtCheckpoint >= Transforms.Capacity / 8
+                // Transform blocks are compact, so this bound keeps seeks short when frames come very fast.
+                || Transforms.Head - _transformsAtCheckpoint >= Transforms.Capacity / 32
                 || Values.Head - _valuesAtCheckpoint >= Values.Capacity / 8
                 || sequence - _sequenceAtCheckpoint >= _frames.Length / 8;
         }
@@ -296,13 +320,13 @@ namespace Nekuzaky.Hindsight.Editor
             _sequenceAtCheckpoint = sequence;
         }
 
-        private void MakeRoom(int slotNeed, int streamNeed, double now)
+        private void MakeRoom(long transformNeed, int streamNeed, double now)
         {
             // Every pass drops one checkpoint, so the loop is bounded by the checkpoint count.
             var passes = _checkpoints.Count;
             for (var pass = 0; pass < passes; pass++)
             {
-                var needSpace = Transforms.Free < slotNeed || Values.Free < streamNeed
+                var needSpace = Transforms.Free < transformNeed || Values.Free < streamNeed
                     || FrameCount >= _frames.Length - 1;
                 var tooOld = _checkpoints.Count >= 2
                     && now - Frame(_checkpoints.SequenceAt(1)).RealTime >= WindowSeconds;
@@ -317,7 +341,7 @@ namespace Nekuzaky.Hindsight.Editor
                 DropOldestSegment();
             }
 
-            if (Transforms.Free < slotNeed || Values.Free < streamNeed)
+            if (Transforms.Free < transformNeed || Values.Free < streamNeed)
                 Clear();
         }
 
@@ -333,26 +357,23 @@ namespace Nekuzaky.Hindsight.Editor
             Trimmed?.Invoke(OldestSequence);
         }
 
-        private bool TryFindSlot(in FrameRecord frame, int slot, out TransformSample value)
+        /// <summary>Index of the slot's entry in a frame, or -1 when it did not move.</summary>
+        private int FindEntry(in FrameRecord frame, int slot)
         {
             // Entries inside a frame are written in slot order, so a binary search finds the slot.
             int low = 0, high = frame.TransformCount - 1;
             while (low <= high)
             {
                 var middle = (low + high) >> 1;
-                var delta = Transforms.Items[Transforms.IndexOf(frame.TransformStart + middle)];
-                if (delta.Slot == slot)
-                {
-                    value = delta.Value;
-                    return true;
-                }
-                if (delta.Slot < slot)
+                var found = TransformCodec.SlotAt(Transforms.Items, frame.TransformStart, middle);
+                if (found == slot)
+                    return middle;
+                if (found < slot)
                     low = middle + 1;
                 else
                     high = middle - 1;
             }
-            value = default;
-            return false;
+            return -1;
         }
 
         #endregion

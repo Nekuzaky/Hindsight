@@ -110,11 +110,11 @@ Intel Core i7-14700KF, Unity 6000.3.13f1):
 
 | Scenario | Hindsight per frame (avg / p95) | Memory for 30 s | GC per frame | Rewind to any frame |
 |---|---:|---:|---:|---:|
-| 10,000 objects, none moving | 0.012 / 0.019 ms | 1.2 MB | 0 B | 0.47 ms |
-| 10,000 objects, 1,000 moving | 0.016 / 0.022 ms | 82 MB | 0 B | 2.1 ms |
-| 10,000 objects, all moving | 0.050 / 0.083 ms | 368 MB | 0 B | 2.0 ms |
-| 500 Rigidbody2D bodies | 0.020 / 0.062 ms | 10 MB | 0 B | 0.7 ms |
-| 20 objects created and destroyed per frame | 0.130 / 0.200 ms | 51 MB | 0 B | 2.2 ms |
+| 10,000 objects, none moving | 0.019 / 0.031 ms | 1.2 MB | 0 B | 0.39 ms |
+| 10,000 objects, 1,000 moving | 0.020 / 0.044 ms | 40 MB | 0 B | 2.7 ms |
+| 10,000 objects, all moving | 0.072 / 0.184 ms | 376 MB | 0 B | 3.8 ms |
+| 500 Rigidbody2D bodies | 0.021 / 0.066 ms | 5 MB | 0 B | 0.9 ms |
+| 20 objects created and destroyed per frame | 0.149 / 0.269 ms | 16 MB | 0 B | 2.8 ms |
 
 The full table, the memory model and the architecture are in
 [Performance and how it works](Packages/com.nekuzaky.hindsight/Documentation~/performance.md).

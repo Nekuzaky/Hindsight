@@ -3,16 +3,17 @@
 ## Measured cost
 
 Measured with `Tools/Benchmark.ps1`: real Play Mode, the real player loop, each scenario played twice (recording off
-and on) for 1,800 frames at a fixed 60 frames per simulated second, after 120 warm-up frames.
+and on) for 1,800 frames at a fixed 60 frames per simulated second, after 120 warm-up frames. Moving objects bob up
+and down and turn around their vertical axis every frame, like a walking character.
 
 | Scenario | Objects recorded | Hindsight per frame (avg / p95 / max) | Frame time off → on | Memory for 30 s | GC per frame | Seek | Graph data |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| 10,000 objects, none moving | 10,003 | 0.012 / 0.019 / 0.106 ms | 0.06 → 0.16 ms | 1.2 MB | 0 B | 0.47 ms | 0.45 ms |
-| 1,000 objects, all moving | 1,003 | 0.019 / 0.026 / 0.169 ms | 0.20 → 0.26 ms | 80.8 MB | 0 B | 2.06 ms | 1.31 ms |
-| 10,000 objects, 1,000 moving | 10,003 | 0.016 / 0.022 / 0.271 ms | 0.22 → 0.28 ms | 82.3 MB | 0 B | 2.12 ms | 1.02 ms |
-| 10,000 objects, all moving | 10,003 | 0.050 / 0.083 / 0.500 ms | 1.23 → 1.39 ms | 368.0 MB* | 0 B | 2.02 ms | 0.67 ms |
-| 500 Rigidbody2D bodies | 504 | 0.020 / 0.062 / 0.181 ms | 0.13 → 0.25 ms | 10.0 MB | 0 B | 0.69 ms | 0.08 ms |
-| Churn: 20 objects created and 20 destroyed per frame | 1,603 | 0.130 / 0.200 / 1.032 ms | 0.38 → 0.59 ms | 50.7 MB | 0 B | 2.16 ms | 0.69 ms |
+| 10,000 objects, none moving | 10,003 | 0.019 / 0.031 / 0.051 ms | 0.05 → 0.14 ms | 1.2 MB | 0 B | 0.39 ms | 0.32 ms |
+| 1,000 objects, all moving | 1,003 | 0.019 / 0.021 / 0.128 ms | 0.20 → 0.30 ms | 36.9 MB | 0 B | 2.41 ms | 0.58 ms |
+| 10,000 objects, 1,000 moving | 10,003 | 0.020 / 0.044 / 0.104 ms | 0.21 → 0.29 ms | 39.7 MB | 0 B | 2.73 ms | 0.35 ms |
+| 10,000 objects, all moving | 10,003 | 0.072 / 0.184 / 0.420 ms | 1.35 → 1.67 ms | 375.7 MB* | 0 B | 3.77 ms | 0.92 ms |
+| 500 Rigidbody2D bodies | 504 | 0.021 / 0.066 / 0.129 ms | 0.13 → 0.24 ms | 5.0 MB | 0 B | 0.94 ms | 0.03 ms |
+| Churn: 20 objects created and 20 destroyed per frame | 1,603 | 0.149 / 0.269 / 1.061 ms | 0.35 → 0.62 ms | 15.9 MB | 0 B | 2.79 ms | 0.76 ms |
 
 Intel Core i7-14700KF, Unity 6000.3.13f1, editor in batch mode.
 
@@ -22,8 +23,8 @@ Intel Core i7-14700KF, Unity 6000.3.13f1, editor in batch mode.
   while the frame renders.
 - **Seek** is the time to rebuild and show any recorded frame. **Graph data** is the time to extract one object's
   values over the whole history.
-- \* With 10,000 objects moving every frame, the default 512 MB budget holds about 14 seconds instead of 30. Raise the
-  budget if you need more.
+- \* 10,000 objects moving every frame fill the default 512 MB budget, which holds about 29 of the 30 seconds (14
+  seconds before version 1.1). Raise the budget if you need more.
 
 ## In a real game
 
@@ -41,9 +42,12 @@ with recording off, then on:
 
 ## Memory
 
-A moving object costs 44 bytes per frame it moves (position, rotation, scale and its slot), so about 2.6 KB per second
-at 60 fps. An object that does not move costs nothing after its first frame. Velocities and tracked values cost 20
-bytes per change. On top of that, a full copy of the state is kept about once per second, so any frame can be rebuilt
+Only what changed is stored, bit for bit: 8 bytes to say which object and which of its ten transform values
+changed, then 4 bytes per changed value. An object falling straight down costs 12 bytes per frame, an object sliding
+on a plane 16, a character that walks and turns 24, and an object whose position, rotation and scale all change 48.
+That is about 1.4 KB per second at 60 fps for a walking character, where every move cost 44 bytes before version 1.1.
+An object that does not move costs nothing after its first frame. Velocities and tracked values cost 20 bytes per
+change. On top of that, a full copy of the state is kept about once per second, so any frame can be rebuilt
 from a nearby copy.
 
 ## How it works

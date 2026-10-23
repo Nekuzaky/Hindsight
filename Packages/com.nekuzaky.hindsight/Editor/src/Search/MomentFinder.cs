@@ -228,15 +228,17 @@ namespace Nekuzaky.Hindsight.Editor
                     ref readonly var frame = ref history.Frame(sequence);
                     for (var i = 0; i < frame.TransformCount; i++)
                     {
-                        var delta = history.Transforms.At(frame.TransformStart + i);
-                        var matches = query.Matches(delta.Value.Position[axis]);
-                        if (matches && !holds[delta.Slot])
+                        var slot = history.ApplyEntry(frame, i, states);
+                        if (slot >= slots)
+                            continue;
+                        var matches = query.Matches(states[slot].Position[axis]);
+                        if (matches && !holds[slot])
                         {
-                            found = (sequence, delta.Slot);
+                            found = (sequence, slot);
                             if (stopAtFirst)
                                 return found;
                         }
-                        holds[delta.Slot] = matches;
+                        holds[slot] = matches;
                     }
                 }
             }

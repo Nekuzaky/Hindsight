@@ -7,7 +7,7 @@ namespace Nekuzaky.Hindsight.Editor
     {
         #region Public
 
-        public const int TransformDeltaBytes = 44;
+        public const int TransformWordBytes = 4;
         public const int ValueDeltaBytes = 20;
         public const int MinimumRingEntries = 4096;
         public const int DefaultMaxFrames = 1 << 17;
@@ -41,12 +41,13 @@ namespace Nekuzaky.Hindsight.Editor
         public bool MarkLifecycle { get; }
 
         /// <summary>70 % of the budget goes to transform deltas, 15 % to values; checkpoints use the rest.</summary>
-        public int TransformCapacity => Clamp(MemoryBudgetBytes * 70 / 100 / TransformDeltaBytes);
+        /// <summary>Words of the transform ring (see <see cref="TransformCodec"/>).</summary>
+        public int TransformCapacity => Clamp(MemoryBudgetBytes * 70 / 100 / TransformWordBytes);
 
         public int ValueCapacity => Clamp(MemoryBudgetBytes * 15 / 100 / ValueDeltaBytes);
 
         /// <summary>Slots are capped so a frame where every object moves always fits in a quarter of the ring.</summary>
-        public int SlotLimit => Mathf.Max(1, Mathf.Min(MaxObjects, TransformCapacity / 4));
+        public int SlotLimit => Mathf.Max(1, Mathf.Min(Mathf.Min(MaxObjects, TransformCodec.MaxSlots), TransformCapacity / 4 / TransformCodec.MaxWordsPerSlot - 1));
 
         public int StreamLimit => Mathf.Max(1, ValueCapacity / 4);
 

@@ -37,8 +37,9 @@ namespace Nekuzaky.Hindsight.Editor
     }
 
     /// <summary>
-    /// Writes the moved transforms into the delta ring in slot order, reports destroyed objects and lists the
-    /// slots whose velocity should be sampled (moved this frame or the frame before).
+    /// Writes the changed components of the moved transforms into the ring as one block (see
+    /// <see cref="TransformCodec"/>), reports destroyed objects and lists the slots whose velocity should be sampled
+    /// (moved this frame or the frame before).
     /// </summary>
     [BurstCompile]
     internal struct PackTransformsJob : IJob
@@ -50,16 +51,21 @@ namespace Nekuzaky.Hindsight.Editor
         [ReadOnly] public NativeArray<byte> Flags;
         public NativeArray<byte> Alive;
         public NativeArray<byte> Moving;
-        [WriteOnly] public NativeArray<TransformDelta> Ring;
+        public NativeArray<uint> Ring;
         [WriteOnly] public NativeArray<int> Died;
         [WriteOnly] public NativeArray<int> SampleSlots;
         public NativeArray<int> Counters;
 
         public void Execute()
         {
-            int written = 0, died = 0, sampled = 0;
-            var capacity = Ring.Length;
+            int moved = 0, died = 0, sampled = 0;
+            for (var slot = 0; slot < SlotCount; slot++)
+            {
+                if (Flags[slot] == SlotFlag.Changed)
+                    moved++;
+            }
 
+            var block = new TransformBlockWriter(Ring, RingHead, moved);
             for (var slot = 0; slot < SlotCount; slot++)
             {
                 var flag = Flags[slot];
@@ -74,21 +80,21 @@ namespace Nekuzaky.Hindsight.Editor
                     continue;
                 }
 
-                var moved = flag == SlotFlag.Changed;
-                if (moved)
+                var changed = flag == SlotFlag.Changed;
+                if (changed)
                 {
                     var value = Current[slot];
-                    Ring[(int)((RingHead + written) % capacity)] = new TransformDelta { Slot = slot, Value = value };
+                    block.Add(slot, value, Last[slot]);
                     Last[slot] = value;
-                    written++;
                 }
 
-                if (moved || Moving[slot] == 1)
+                if (changed || Moving[slot] == 1)
                     SampleSlots[sampled++] = slot;
-                Moving[slot] = moved ? (byte)1 : (byte)0;
+                Moving[slot] = changed ? (byte)1 : (byte)0;
             }
 
-            Counters[RecorderCounters.Written] = written;
+            Counters[RecorderCounters.Written] = block.Finish();
+            Counters[RecorderCounters.Moved] = moved;
             Counters[RecorderCounters.Died] = died;
             Counters[RecorderCounters.Sampled] = sampled;
         }
@@ -99,7 +105,8 @@ namespace Nekuzaky.Hindsight.Editor
         public const int Written = 0;
         public const int Died = 1;
         public const int Sampled = 2;
-        public const int Length = 3;
+        public const int Moved = 3;
+        public const int Length = 4;
     }
 
     /// <summary>Copies the live transforms, used to come back to the present after rewinding.</summary>
@@ -142,11 +149,11 @@ namespace Nekuzaky.Hindsight.Editor
         }
     }
 
-    /// <summary>Replays a contiguous range of transform deltas on top of a checkpoint.</summary>
+    /// <summary>Replays a contiguous run of transform blocks on top of a checkpoint.</summary>
     [BurstCompile]
     internal struct ReplayTransformsJob : IJob
     {
-        [ReadOnly] public NativeArray<TransformDelta> Ring;
+        [ReadOnly] public NativeArray<uint> Ring;
         public long Start;
         public long End;
         public int SlotCount;
@@ -154,12 +161,12 @@ namespace Nekuzaky.Hindsight.Editor
 
         public void Execute()
         {
-            var capacity = Ring.Length;
-            for (var index = Start; index < End; index++)
+            // A block is never shorter than its header, so the walk ends within (End - Start) / 2 steps.
+            var block = Start;
+            for (var step = 0L; step < End - Start && block < End; step++)
             {
-                var delta = Ring[(int)(index % capacity)];
-                if (delta.Slot < SlotCount)
-                    States[delta.Slot] = delta.Value;
+                TransformCodec.ApplyBlock(Ring, block, States, SlotCount);
+                block += TransformCodec.BlockWords(Ring, block);
             }
         }
     }

@@ -130,7 +130,7 @@ namespace Nekuzaky.Hindsight.Editor
             if (died > 0 && Options.MarkLifecycle)
                 Markers.Add(MarkerKind.Destroy, LifecycleText.Disappeared(died), string.Empty, sequence, History.Frame(sequence).RealTime);
             SampleValues(_counters[RecorderCounters.Sampled], sequence);
-            History.EndFrame(_counters[RecorderCounters.Written], _last, SlotCount, _values, StreamCount);
+            History.EndFrame(_counters[RecorderCounters.Written], _counters[RecorderCounters.Moved], _last, SlotCount, _values, StreamCount);
         }
 
         /// <summary>Captures one whole frame synchronously. Used by tests and the benchmark.</summary>

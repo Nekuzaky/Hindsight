@@ -3,7 +3,8 @@
     "rootNamespace": "Nekuzaky.Hindsight.Editor",
     "references": [
         "Nekuzaky.Hindsight",
-        "Unity.Burst"
+        "Unity.Burst",
+        "Unity.Mathematics"
     ],
     "includePlatforms": [
         "Editor"

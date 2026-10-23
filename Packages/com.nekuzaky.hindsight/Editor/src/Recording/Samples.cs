@@ -40,14 +40,6 @@ namespace Nekuzaky.Hindsight.Editor
         #endregion
     }
 
-    /// <summary>One changed transform in the delta ring.</summary>
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct TransformDelta
-    {
-        public int Slot;
-        public TransformSample Value;
-    }
-
     /// <summary>One changed value (velocity or tracked field) in the delta ring.</summary>
     [StructLayout(LayoutKind.Sequential)]
     internal struct ValueDelta
@@ -95,8 +87,12 @@ namespace Nekuzaky.Hindsight.Editor
         public double GameTime;
         public double RealTime;
         public float TimeScale;
+        /// <summary>Absolute ring index of the frame's transform block (see <see cref="TransformCodec"/>).</summary>
         public long TransformStart;
+        /// <summary>Objects that moved this frame.</summary>
         public int TransformCount;
+        /// <summary>Ring words the block takes; 0 when nothing moved.</summary>
+        public int TransformWords;
         public long ValueStart;
         public int ValueCount;
         public bool Committed;

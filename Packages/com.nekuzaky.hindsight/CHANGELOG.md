@@ -15,6 +15,10 @@ All notable changes to this package are documented here. The format follows
 
 ### Changed
 
+- **Recordings take about half the memory.** Only the transform values that changed are stored, bit for bit, so the
+  same budget holds a longer history: 12 to 24 bytes per moving object and frame instead of 44. The benchmark scene
+  with 1,000 moving objects went from 80.8 MB to 36.9 MB for 30 seconds. Checkpoints are also taken more often when
+  frames come very fast, which keeps seeks short.
 - The package description says exactly what reaches a build: a 5 KB assembly whose calls are removed.
 
 ## [1.0.2] - 2026-10-23

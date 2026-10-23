@@ -48,17 +48,23 @@ namespace Nekuzaky.Hindsight.Tests
         public int Record(int frame, double time)
         {
             var sequence = History.BeginFrame(new FrameClock(frame, time, time, 1f), Slots, Streams);
-            var written = 0;
-            var ring = History.Transforms.Items;
+            var moved = 0;
+            for (var slot = 0; slot < Slots; slot++)
+            {
+                if (!TransformSample.Same(Expected(slot, frame), State[slot]))
+                    moved++;
+            }
+
+            var block = new TransformBlockWriter(History.Transforms.Items, History.Transforms.Head, moved);
             for (var slot = 0; slot < Slots; slot++)
             {
                 var sample = Expected(slot, frame);
                 if (TransformSample.Same(sample, State[slot]))
                     continue;
-                ring[History.Transforms.IndexOf(History.Transforms.Head + written)] = new TransformDelta { Slot = slot, Value = sample };
+                block.Add(slot, sample, State[slot]);
                 State[slot] = sample;
-                written++;
             }
+            var written = block.Finish();
 
             for (var stream = 0; stream < Streams; stream++)
             {
@@ -69,7 +75,7 @@ namespace Nekuzaky.Hindsight.Tests
                 History.AppendValue(stream, value);
             }
 
-            History.EndFrame(written, State, Slots, Values, Streams);
+            History.EndFrame(written, moved, State, Slots, Values, Streams);
             TruthTransforms[sequence] = State.ToArray();
             TruthValues[sequence] = Values.ToArray();
             return sequence;
