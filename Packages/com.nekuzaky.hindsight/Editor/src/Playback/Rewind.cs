@@ -28,11 +28,30 @@ namespace Nekuzaky.Hindsight.Editor
 
         public bool HideObjectsNotYetSpawned { get; set; } = true;
 
-        /// <summary>Transforms of every slot at <see cref="Sequence"/>.</summary>
-        public NativeArray<TransformSample> Transforms => IsActive ? _shown : _recorder.State;
+        /// <summary>Transforms of every slot at <see cref="Sequence"/>. Safe to read while the game runs.</summary>
+        public NativeArray<TransformSample> Transforms
+        {
+            get
+            {
+                if (IsActive)
+                    return _shown;
+                // The capture job of the current frame may still own the live state: finish it first.
+                _recorder.Commit();
+                return _recorder.State;
+            }
+        }
 
-        /// <summary>Values of every stream at <see cref="Sequence"/>.</summary>
-        public NativeArray<Vector4> Values => IsActive ? _shownValues : _recorder.ValueState;
+        /// <summary>Values of every stream at <see cref="Sequence"/>. Safe to read while the game runs.</summary>
+        public NativeArray<Vector4> Values
+        {
+            get
+            {
+                if (IsActive)
+                    return _shownValues;
+                _recorder.Commit();
+                return _recorder.ValueState;
+            }
+        }
 
         public event Action Changed;
 

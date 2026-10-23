@@ -7,7 +7,7 @@
   <a href="https://github.com/Nekuzaky/Hindsight/releases"><img alt="Release" src="https://img.shields.io/github/v/tag/Nekuzaky/Hindsight?label=release&color=8b7cff"></a>
   <img alt="Cost in builds: 0 ms" src="https://img.shields.io/badge/cost%20in%20builds-0%20ms-3ddc84">
   <img alt="GC per frame: 0 B" src="https://img.shields.io/badge/GC%20per%20frame-0%20B-3ddc84">
-  <img alt="Tests: 25 EditMode" src="https://img.shields.io/badge/tests-25%20EditMode-38bdf8">
+  <img alt="Tests: 26 EditMode" src="https://img.shields.io/badge/tests-26%20EditMode-38bdf8">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-8b92a2"></a>
 </p>
 
@@ -75,7 +75,7 @@ In Unity: **Window > Package Manager > + > Install package from git URL...** and
 https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight
 ```
 
-Pin a release by adding its tag, for example `...?path=Packages/com.nekuzaky.hindsight#v1.0.1`.
+Pin a release by adding its tag, for example `...?path=Packages/com.nekuzaky.hindsight#v1.0.2`.
 
 ## Quick start
 
@@ -118,7 +118,7 @@ The full table, the memory model and the architecture are in
 
 ## How it works, in short
 
-Hindsight adds two systems to Unity's player loop when Play Mode starts. Right after `LateUpdate`, a Burst
+Hindsight adds three systems to Unity's player loop when Play Mode starts. Right after `LateUpdate`, a Burst
 `IJobParallelForTransform` reads every recorded transform on worker threads while the frame renders, and only the
 transforms that changed are written to a fixed-size ring buffer. At the start of the next frame, velocities and
 tracked fields are sampled and the frame is closed. A full copy of the state is kept about once per second, so any

@@ -104,7 +104,7 @@ namespace Nekuzaky.Hindsight.Editor
             Object.DontDestroyOnLoad(_probe);
             Recorder.SetPersistentSceneProbe(_probe);
 
-            PlayerLoopHook.Install(OnFrameStart, OnAfterLateUpdate);
+            PlayerLoopHook.Install(OnFrameStart, OnAfterLateUpdate, OnFrameEnd);
             Application.logMessageReceived += OnLogMessage;
             global::Nekuzaky.Hindsight.Hindsight.BookmarkRequested += OnBookmarkRequested;
             StatusChanged?.Invoke();
@@ -214,8 +214,11 @@ namespace Nekuzaky.Hindsight.Editor
             _pendingTicks += Stopwatch.GetTimestamp() - start;
         }
 
-        // The editor updates between two frames: anything logged from here until the next frame starts comes from
-        // editor code (inspectors, importers, the editor itself), not from the game.
+        // Between the end of a frame and the start of the next one, the editor runs its own code (windows, inspectors,
+        // importers): what it logs is not about the game. The end-of-frame system and the editor update both close
+        // the frame, whichever comes first.
+        private static void OnFrameEnd() => _insideFrame = false;
+
         private static void OnEditorUpdate() => _insideFrame = false;
 
         private static void OnAfterLateUpdate()

@@ -3,6 +3,22 @@
 All notable changes to this package are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.2] - 2026-10-23
+
+### Fixed
+
+- Selecting an object while the game was running threw an `InvalidOperationException` on every refresh of the window:
+  the panel read the recording while the capture job of that frame still owned it. Every read from the window, the
+  graph and the Scene view now finishes the pending capture first.
+- Messages logged by editor windows between two frames could appear on the timeline as game errors. A frame now ends
+  with Hindsight's end-of-frame system or the editor update, whichever comes first.
+
+### Verified
+
+- Visible play session in the same HDRP game on Unity 6000.5.9f1, with the player driven around and the object
+  selected while recording: no exception, 0 bytes of managed allocation, the UI renders correctly, and rewinding,
+  jumping to a bookmark and going live all work.
+
 ## [1.0.1] - 2026-10-23
 
 ### Fixed

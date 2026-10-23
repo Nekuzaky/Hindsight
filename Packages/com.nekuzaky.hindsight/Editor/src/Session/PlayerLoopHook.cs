@@ -5,9 +5,9 @@ using UnityEngine.PlayerLoop;
 namespace Nekuzaky.Hindsight.Editor
 {
     /// <summary>
-    /// Adds Hindsight's two callbacks to Unity's player loop: one at the start of a frame, which collects the
-    /// previous capture, and one right after LateUpdate, which schedules the capture so it runs while the frame
-    /// renders. No GameObject is added to your scene.
+    /// Adds Hindsight's callbacks to Unity's player loop: one at the start of a frame, which collects the previous
+    /// capture, one right after LateUpdate, which schedules the capture so it runs while the frame renders, and one
+    /// at the very end of the frame. No GameObject is added to your scene.
     /// </summary>
     internal static class PlayerLoopHook
     {
@@ -17,6 +17,8 @@ namespace Nekuzaky.Hindsight.Editor
 
         private struct HindsightCapture { }
 
+        private struct HindsightFrameEnd { }
+
 
         #endregion
 
@@ -25,13 +27,15 @@ namespace Nekuzaky.Hindsight.Editor
 
         public static bool IsInstalled { get; private set; }
 
-        public static void Install(PlayerLoopSystem.UpdateFunction frameStart, PlayerLoopSystem.UpdateFunction afterLateUpdate)
+        public static void Install(PlayerLoopSystem.UpdateFunction frameStart, PlayerLoopSystem.UpdateFunction afterLateUpdate,
+            PlayerLoopSystem.UpdateFunction frameEnd)
         {
             var loop = PlayerLoop.GetCurrentPlayerLoop();
             Remove(ref loop);
 
             var inserted = Insert(ref loop, typeof(Initialization), System(typeof(HindsightCommit), frameStart), true)
-                && Insert(ref loop, typeof(PostLateUpdate), System(typeof(HindsightCapture), afterLateUpdate), true);
+                && Insert(ref loop, typeof(PostLateUpdate), System(typeof(HindsightCapture), afterLateUpdate), true)
+                && Insert(ref loop, typeof(PostLateUpdate), System(typeof(HindsightFrameEnd), frameEnd), false);
             if (!inserted)
                 throw new InvalidOperationException("Hindsight could not find the Initialization and PostLateUpdate phases of the player loop.");
 
@@ -116,7 +120,8 @@ namespace Nekuzaky.Hindsight.Editor
 
         private static bool IsOurs(in PlayerLoopSystem system)
         {
-            return system.type == typeof(HindsightCommit) || system.type == typeof(HindsightCapture);
+            return system.type == typeof(HindsightCommit) || system.type == typeof(HindsightCapture)
+                || system.type == typeof(HindsightFrameEnd);
         }
 
         #endregion

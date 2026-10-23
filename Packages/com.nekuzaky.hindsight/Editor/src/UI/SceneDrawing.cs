@@ -189,7 +189,7 @@ namespace Nekuzaky.Hindsight.Editor
         private static void BuildTrail(Recorder recorder, Transform transform, int slot, ref Trail trail)
         {
             var history = recorder.History;
-            var frames = history.ExtractSlot(slot, _samples);
+            var frames = recorder.ExtractSlot(slot, _samples);
             var step = Mathf.Max(1, Mathf.CeilToInt(frames / (float)MaxTrailPoints));
             trail.Points ??= new Vector3[MaxTrailPoints + 1];
             trail.Sequences ??= new int[MaxTrailPoints + 1];

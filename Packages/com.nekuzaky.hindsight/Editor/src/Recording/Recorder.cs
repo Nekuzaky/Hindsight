@@ -132,6 +132,20 @@ namespace Nekuzaky.Hindsight.Editor
             Commit();
         }
 
+        /// <summary>One transform per kept frame for a slot, oldest first. Safe to call while a frame is pending.</summary>
+        public int ExtractSlot(int slot, TransformSample[] output)
+        {
+            Commit();
+            return History.ExtractSlot(slot, output);
+        }
+
+        /// <summary>One value per kept frame for a stream, oldest first. Safe to call while a frame is pending.</summary>
+        public int ExtractStream(int stream, Vector4[] output)
+        {
+            Commit();
+            return History.ExtractStream(stream, output);
+        }
+
         public void AddMarker(MarkerKind kind, string message, string stackTrace, double realTime)
         {
             Markers.Add(kind, message, stackTrace, MarkerSequence, realTime);

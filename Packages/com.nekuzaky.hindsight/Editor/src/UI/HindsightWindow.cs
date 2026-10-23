@@ -246,9 +246,9 @@ namespace Nekuzaky.Hindsight.Editor
             if (_main == null)
                 return;
 
+            // Finishes the pending capture so everything below reads complete data, also while the game runs.
             var recorder = HindsightSession.Recorder;
-            if (recorder != null && EditorApplication.isPaused)
-                recorder.Commit();
+            recorder?.Commit();
 
             UpdateStatus();
             var hasData = recorder != null && !recorder.History.IsEmpty;

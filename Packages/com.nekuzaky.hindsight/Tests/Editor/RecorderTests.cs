@@ -53,6 +53,30 @@ namespace Nekuzaky.Hindsight.Tests
         }
 
         [Test]
+        public void ReadingWhileACaptureIsPendingIsSafe()
+        {
+            var cubes = Spawn(3);
+            Start();
+            for (var frame = 0; frame < 5; frame++)
+            {
+                cubes[0].transform.position = new Vector3(frame, 0f, 0f);
+                Capture(frame);
+            }
+
+            // Like the window does while the game runs: a capture job is scheduled and not collected yet.
+            cubes[0].transform.position = new Vector3(42f, 0f, 0f);
+            _recorder.EndFrame(new FrameClock(5, 5 / 60d, 5 / 60d, 1f));
+            Assert.IsTrue(_recorder.HasPendingFrame);
+
+            Assert.IsTrue(_recorder.TryGetSlot(cubes[0].transform, out var slot));
+            Assert.DoesNotThrow(() => Assert.AreEqual(42f, _rewind.Transforms[slot].Position.x));
+            Assert.DoesNotThrow(() => _ = _rewind.Values);
+            var samples = new TransformSample[16];
+            Assert.DoesNotThrow(() => _recorder.ExtractSlot(slot, samples));
+            Assert.IsFalse(_recorder.HasPendingFrame);
+        }
+
+        [Test]
         public void HidesObjectsThatDidNotExistYet()
         {
             Spawn(1);
@@ -237,8 +261,8 @@ namespace Nekuzaky.Hindsight.Tests
         public void PlayerLoopHook_UninstallRestoresTheLoop()
         {
             var before = CountSystems();
-            PlayerLoopHook.Install(() => { }, () => { });
-            Assert.AreEqual(before + 2, CountSystems());
+            PlayerLoopHook.Install(() => { }, () => { }, () => { });
+            Assert.AreEqual(before + 3, CountSystems());
             PlayerLoopHook.Uninstall();
             Assert.AreEqual(before, CountSystems());
         }

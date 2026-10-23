@@ -60,7 +60,7 @@ Frame N                                                Frame N+1
                    read every transform, keep the ones that changed, write them to the ring
 ```
 
-- **No GameObject, no MonoBehaviour.** Hindsight adds two systems to Unity's player loop when Play Mode starts and
+- **No GameObject, no MonoBehaviour.** Hindsight adds three systems to Unity's player loop when Play Mode starts and
   removes them when it ends. It works with and without domain reload.
 - **Burst jobs.** A read-only `IJobParallelForTransform` reads every recorded transform on worker threads and flags
   the ones that changed; a second job writes only those into a ring buffer, in slot order.

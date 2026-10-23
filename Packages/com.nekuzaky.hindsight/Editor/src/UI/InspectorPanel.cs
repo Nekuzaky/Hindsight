@@ -367,14 +367,14 @@ namespace Nekuzaky.Hindsight.Editor
 
             if (channel.Stream >= 0)
             {
-                count = history.ExtractStream(channel.Stream, _rawValues);
+                count = recorder.ExtractStream(channel.Stream, _rawValues);
                 var format = recorder.FormatOf(channel.Stream);
                 for (var i = 0; i < count; i++)
                     _series[i] = ValueSample.IsSet(_rawValues[i]) ? Format.Scalar(_rawValues[i], format) : float.NaN;
             }
             else
             {
-                count = history.ExtractSlot(slot, _samples);
+                count = recorder.ExtractSlot(slot, _samples);
                 for (var i = 0; i < count; i++)
                     _series[i] = _samples[i].IsSet ? _samples[i].Position[channel.Axis] : float.NaN;
             }
