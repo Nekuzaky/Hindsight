@@ -136,6 +136,23 @@ namespace Nekuzaky.Hindsight.Editor
                 Version++;
         }
 
+        /// <summary>Drops markers raised after <paramref name="sequence"/> and shortens the ranges that go past it.</summary>
+        public void TrimAfter(int sequence)
+        {
+            for (var guard = Count; guard > 0 && Count > 0 && this[Count - 1].Sequence > sequence; guard--)
+            {
+                _items[(_start + Count - 1) % _items.Length] = default;
+                Count--;
+            }
+            for (var i = 0; i < Count; i++)
+            {
+                ref var marker = ref _items[(_start + i) % _items.Length];
+                if (marker.LastSequence > sequence)
+                    marker.LastSequence = sequence;
+            }
+            Version++;
+        }
+
         public void Clear()
         {
             Array.Clear(_items, 0, _items.Length);

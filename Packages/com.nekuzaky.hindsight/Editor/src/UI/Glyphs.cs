@@ -62,6 +62,7 @@ namespace Nekuzaky.Hindsight.Editor
         public const string Scene = "map-fill";
         public const string Save = "floppy-fill";
         public const string OpenFile = "folder2-open";
+        public const string Resume = "play-circle-fill";
         public const string Waiting = "hourglass-split";
 
         public static Texture2D WindowIcon

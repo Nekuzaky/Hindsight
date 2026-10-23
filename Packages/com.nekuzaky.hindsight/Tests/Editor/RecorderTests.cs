@@ -323,6 +323,43 @@ namespace Nekuzaky.Hindsight.Tests
             Assert.AreEqual(0, _recorder.Markers.Count);
         }
 
+        [Test]
+        public void ResumingFromAPastFrameForgetsWhatCameAfter()
+        {
+            var cubes = Spawn(2);
+            Start();
+            for (var frame = 0; frame < 40; frame++)
+                Move(cubes, frame);
+            _recorder.AddMarker(MarkerKind.Bookmark, "Later", string.Empty, 1d);
+            var late = Spawn(1)[0];
+            _recorder.MarkHierarchyDirty();
+            Move(cubes, 40);
+            Object.DestroyImmediate(cubes[1]);
+            Move(new[] { cubes[0] }, 41);
+            Move(new[] { cubes[0] }, 42);
+
+            var target = _recorder.History.OldestSequence + 20;
+            Assert.IsTrue(_rewind.Show(target));
+            var shown = cubes[0].transform.localPosition;
+            _recorder.ResumeAt(target, _rewind.Transforms, _rewind.Values);
+            _rewind.Adopt();
+
+            Assert.IsFalse(_rewind.IsActive);
+            Assert.AreEqual(shown, cubes[0].transform.localPosition, "The scene stays on the resumed frame.");
+            Assert.AreEqual(target, _recorder.History.NewestSequence);
+            Assert.AreEqual(0, _recorder.Markers.CountOf(MarkerKind.Bookmark), "Events after that frame are forgotten.");
+
+            Capture(43);
+            Capture(44);
+            Assert.AreEqual(target + 2, _recorder.History.NewestSequence);
+            Assert.IsTrue(_recorder.TryGetSlot(late.transform, out var lateSlot));
+            Assert.AreEqual(target + 1, _recorder.BirthOf(lateSlot), "Objects created after that frame start again now.");
+            Assert.IsTrue(_rewind.Show(target + 2));
+            AssertNear(shown, cubes[0].transform.localPosition);
+            _rewind.ReturnToLive();
+            Assert.IsTrue(_rewind.Show(target - 5), "Frames before the resumed one are still there.");
+        }
+
         private void Move(GameObject[] cubes, int frame)
         {
             for (var i = 0; i < cubes.Length; i++)

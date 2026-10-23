@@ -31,7 +31,13 @@ Open it with **Tools > Hindsight > Open Hindsight**, **Window > Analysis > Hinds
 | Step forward | One frame forward, while rewinding. | `Right` |
 | Next event | Oldest event after the displayed frame. | `Shift+Right` |
 | Live | Puts every object back where it was and leaves the rewind. | `End` |
+| Resume here | Shown while rewinding in Play Mode. Carries the game on from the displayed frame (see below). | |
 | Fit | Shows the whole recording and follows new frames again. | `F`, or double-click |
+
+**Resume here** keeps the objects where the displayed frame shows them, gives every Rigidbody and Rigidbody2D the
+velocity it had then, forgets the recording after that frame and runs the game again. A bookmark marks where it
+resumed. Your scripts keep their current state (health, timers, AI), so use it to replay a physics moment or retry a
+jump, not to undo game logic.
 
 The readout shows how far back the displayed frame is (`-2.315 s`), its game frame number, and how many frames and
 seconds the history holds.

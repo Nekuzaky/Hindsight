@@ -114,6 +114,19 @@ namespace Nekuzaky.Hindsight.Editor
             Changed?.Invoke();
         }
 
+        /// <summary>
+        /// Makes the shown frame the live scene: objects stay where they are and hidden objects show again.
+        /// Used to resume the game from a past frame.
+        /// </summary>
+        public void Adopt()
+        {
+            if (!IsActive)
+                return;
+            Unhide();
+            IsActive = false;
+            Changed?.Invoke();
+        }
+
         public void Dispose()
         {
             ReturnToLive();

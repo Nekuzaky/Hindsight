@@ -58,6 +58,7 @@ namespace Nekuzaky.Hindsight.Editor
         private Button _closeButton;
         private Button _pauseButton;
         private Button _liveButton;
+        private Button _resumeButton;
         private VisualElement _recordIcon;
         private VisualElement _pauseIcon;
         private int _lastNewest = int.MinValue;
@@ -184,6 +185,10 @@ namespace Nekuzaky.Hindsight.Editor
             var liveLabel = new Label("Live");
             _liveButton.Add(liveLabel);
             transport.Add(_liveButton);
+            _resumeButton = TransportButton(Glyphs.Resume, "Carry the game on from this frame: objects stay here, Rigidbodies get their velocities back, and what came after is forgotten. Scripts keep their current state.", () => HindsightSession.ResumeFromShownFrame());
+            _resumeButton.AddToClassList("hs-transport__resume");
+            _resumeButton.Add(new Label("Resume here"));
+            transport.Add(_resumeButton);
 
             var readout = new VisualElement();
             readout.AddToClassList("hs-readout");
@@ -319,6 +324,7 @@ namespace Nekuzaky.Hindsight.Editor
             Glyphs.Set(_pauseIcon, EditorApplication.isPaused ? Glyphs.Play : Glyphs.Pause);
             _pauseButton.SetEnabled(EditorApplication.isPlaying);
             _liveButton.EnableInClassList("hs-transport__live--active", status == SessionStatus.Rewinding);
+            _resumeButton.style.display = HindsightSession.CanResumeFromShownFrame ? DisplayStyle.Flex : DisplayStyle.None;
 
             if (recorder == null)
             {

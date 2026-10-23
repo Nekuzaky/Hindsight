@@ -261,6 +261,22 @@ namespace Nekuzaky.Hindsight.Editor
         }
 
         /// <summary>
+        /// Forgets every frame after <paramref name="sequence"/>, which becomes the newest one; the next frame
+        /// takes a checkpoint. Used to resume the game from a past frame.
+        /// </summary>
+        public void TruncateAfter(int sequence)
+        {
+            Debug.Assert(!HasOpenFrame, "Commit the pending frame before truncating.");
+            Debug.Assert(Contains(sequence), "Truncation point outside the kept frames.");
+            ref readonly var frame = ref Frame(sequence);
+            Transforms.TruncateTo(frame.TransformStart + frame.TransformWords);
+            Values.TruncateTo(frame.ValueStart + frame.ValueCount);
+            _checkpoints.RemoveAfter(sequence);
+            _next = sequence + 1;
+            _lastCheckpointTime = double.NegativeInfinity;
+        }
+
+        /// <summary>
         /// Applies entry <paramref name="entry"/> of a frame to <paramref name="states"/>, for walks that follow every
         /// object frame by frame. Returns the slot it belongs to.
         /// </summary>

@@ -2,9 +2,10 @@
 
 ## What Hindsight does not do
 
-- **It does not resume the game from the past.** Rewinding shows the past; resuming always continues from the live
-  state. Physics, animation, particles, audio and your scripts' variables are not written back.
-- **Only Transforms are moved.** Velocities and tracked fields are shown in the window and the graph, not applied.
+- **Resuming from the past is partial.** **Resume here** puts Transforms and Rigidbody velocities back; your scripts'
+  variables, animation, particles, audio and `Time.time` keep their current state, and objects created after that
+  frame stay where they are now. Plain **Play** always continues from the live state.
+- **Tracked fields are not written back.** They are shown in the window and the graph.
 - **Destroyed objects cannot be brought back.** They appear as ghosts while rewinding.
 - **Objects deactivated since** stay inactive: Hindsight never calls `SetActive`, to avoid running your `OnEnable` and
   `OnDisable` code.

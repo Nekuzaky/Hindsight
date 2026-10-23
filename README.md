@@ -44,7 +44,8 @@ make it happen again.
 - **Zero setup.** Install the package and press Play. No component, no code, no scene changes.
 - **Rewind the real scene.** The objects themselves move back, so the Scene view and the Game view show the past with
   your real materials, lights and cameras. Objects that did not exist yet are hidden; destroyed ones leave a ghost.
-  Resume, step or exit Play Mode and everything is back live.
+  Resume, step or exit Play Mode and everything is back live, or click **Resume here** to carry the game on from
+  the past frame with its positions and Rigidbody velocities.
 - **A timeline that points at the problem.** Errors, exceptions, warnings and bookmarks are markers you click to jump
   to; an activity lane shows how much moved on each frame. Zoom, pan, step frame by frame, jump event to event.
 - **Jump to the moment it happened.** Type `y < -5`, `speed > 20`, `Health <= 0` or `any y < -10` and Hindsight

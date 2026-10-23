@@ -90,6 +90,13 @@ namespace Nekuzaky.Hindsight.Editor
             Count++;
         }
 
+        /// <summary>Drops the checkpoints taken after <paramref name="sequence"/>.</summary>
+        public void RemoveAfter(int sequence)
+        {
+            for (var guard = Count; guard > 0 && Count > 0 && SequenceAt(Count - 1) > sequence; guard--)
+                Count--;
+        }
+
         public void RemoveOldest()
         {
             Debug.Assert(Count > 0, "No checkpoint to remove.");

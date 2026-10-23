@@ -151,6 +151,18 @@
 .hs-transport__live--active .hs-icon { -unity-background-image-tint-color: rgb(61, 220, 132); }
 .hs-root .hs-transport__live--active Label { color: rgb(93, 226, 150); }
 
+.hs-transport__resume {
+    width: auto;
+    flex-direction: row;
+    padding: 0 10px 0 8px;
+    margin-left: 6px;
+    background-color: rgba(139, 124, 255, 0.14);
+    border-color: rgba(139, 124, 255, 0.5);
+}
+
+.hs-transport__resume .hs-icon { -unity-background-image-tint-color: rgb(178, 168, 255); }
+.hs-root .hs-transport__resume Label { margin-left: 5px; font-size: 11px; -unity-font-style: bold; color: rgb(198, 190, 255); }
+
 .hs-readout { flex-direction: row; align-items: center; margin-left: 16px; }
 
 .hs-root .hs-readout__offset {

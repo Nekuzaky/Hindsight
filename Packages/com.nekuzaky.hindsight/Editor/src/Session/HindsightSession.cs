@@ -158,6 +158,29 @@ namespace Nekuzaky.Hindsight.Editor
             return Rewind.Show(sequence);
         }
 
+        /// <summary>True when the game is paused on a past frame it can carry on from.</summary>
+        public static bool CanResumeFromShownFrame => IsRecording && EditorApplication.isPlaying && Rewind.IsActive;
+
+        /// <summary>
+        /// Carries the game on from the frame the scene shows: objects stay there, Rigidbodies get their velocities
+        /// back, the recording forgets what came after, and the game runs again. Scripts keep their current state.
+        /// </summary>
+        public static bool ResumeFromShownFrame()
+        {
+            if (!CanResumeFromShownFrame)
+                return false;
+
+            var sequence = Rewind.Sequence;
+            var history = Recorder.History;
+            var offset = history.Frame(sequence).RealTime - history.Frame(history.NewestSequence).RealTime;
+            Recorder.ResumeAt(sequence, Rewind.Transforms, Rewind.Values);
+            Recorder.RestoreVelocities(sequence, Rewind.Values);
+            Rewind.Adopt();
+            Recorder.AddMarker(MarkerKind.Bookmark, $"Resumed from {Format.Offset(offset)}", string.Empty, Time.unscaledTimeAsDouble);
+            EditorApplication.isPaused = false;
+            return true;
+        }
+
         /// <summary>Saves the current recording. Returns null, or why it failed.</summary>
         public static string Save(string path)
         {

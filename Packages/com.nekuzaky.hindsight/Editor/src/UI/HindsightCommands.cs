@@ -46,6 +46,15 @@ namespace Nekuzaky.Hindsight.Editor
         [Shortcut("Hindsight/Back to Live")]
         public static void Live() => Navigation.Live();
 
+        [Shortcut("Hindsight/Resume From Here")]
+        public static void ResumeFromHere() => HindsightSession.ResumeFromShownFrame();
+
+        [MenuItem("Tools/Hindsight/Resume From Shown Frame", priority = 3)]
+        public static void ResumeFromHereMenu() => HindsightSession.ResumeFromShownFrame();
+
+        [MenuItem("Tools/Hindsight/Resume From Shown Frame", true)]
+        public static bool CanResumeFromHere() => HindsightSession.CanResumeFromShownFrame;
+
         [MenuItem("Tools/Hindsight/Add Bookmark", priority = 2)]
         public static void AddBookmarkFromMenu() => AddBookmark();
 

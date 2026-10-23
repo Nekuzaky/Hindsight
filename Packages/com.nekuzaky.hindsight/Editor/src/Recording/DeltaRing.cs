@@ -74,6 +74,13 @@ namespace Nekuzaky.Hindsight.Editor
             Head += written;
         }
 
+        /// <summary>Forgets the entries written at or after <paramref name="absoluteIndex"/>.</summary>
+        public void TruncateTo(long absoluteIndex)
+        {
+            Debug.Assert(absoluteIndex >= Tail && absoluteIndex <= Head, "Truncation point outside the kept range.");
+            Head = absoluteIndex;
+        }
+
         public void ReleaseUntil(long absoluteIndex)
         {
             Debug.Assert(absoluteIndex >= Tail && absoluteIndex <= Head, "Release point outside the kept range.");

@@ -13,6 +13,9 @@ All notable changes to this package are documented here. The format follows
 - **Save and open recordings:** the window's Save button writes the recording to a `.hindsight` file; Open shows it
   again outside Play Mode, with the timeline, events, graphs and Find when, and rewinds the objects of the open scene
   found at the same place in the hierarchy. Also in **Tools > Hindsight**.
+- **Resume here:** while rewinding in Play Mode, carries the game on from the displayed frame. Objects stay there,
+  Rigidbody and Rigidbody2D velocities are restored, and the recording forgets what came after. Also in
+  **Tools > Hindsight** and as a shortcut you can bind.
 - **Lifecycle markers:** the timeline marks frames where objects appear or are destroyed ("3 objects appeared") and
   where scenes load. They have their own filter chip and can be turned off in the preferences.
 
