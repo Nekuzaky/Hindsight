@@ -4,26 +4,26 @@ namespace Nekuzaky.Hindsight.Editor
 {
     internal static class Palette
     {
-        public static readonly Color Background = Rgb(17, 19, 24);
-        public static readonly Color Lane = Rgb(23, 26, 32);
-        public static readonly Color LaneAlt = Rgb(27, 30, 37);
-        public static readonly Color Border = Rgb(44, 48, 58);
+        public static readonly Color Background = Rgb(24, 24, 26);
+        public static readonly Color Lane = Rgb(30, 30, 33);
+        public static readonly Color LaneAlt = Rgb(34, 34, 37);
+        public static readonly Color Border = Rgb(50, 50, 55);
         public static readonly Color Grid = new(1f, 1f, 1f, 0.05f);
         public static readonly Color GridStrong = new(1f, 1f, 1f, 0.11f);
-        public static readonly Color Text = Rgb(230, 233, 239);
-        public static readonly Color TextDim = Rgb(139, 146, 162);
-        public static readonly Color Accent = Rgb(139, 124, 255);
-        public static readonly Color AccentSoft = new(139f / 255f, 124f / 255f, 1f, 0.22f);
-        public static readonly Color Live = Rgb(61, 220, 132);
-        public static readonly Color Recording = Rgb(255, 77, 94);
-        public static readonly Color Error = Rgb(255, 92, 92);
-        public static readonly Color Warning = Rgb(255, 176, 32);
-        public static readonly Color Log = Rgb(139, 146, 162);
-        public static readonly Color Bookmark = Rgb(56, 189, 248);
-        public static readonly Color Spawn = Rgb(45, 212, 191);
-        public static readonly Color Destroy = Rgb(148, 163, 184);
-        public static readonly Color SceneLoad = Rgb(226, 232, 240);
-        public static readonly Color Activity = new(139f / 255f, 124f / 255f, 1f, 0.55f);
+        public static readonly Color Text = Rgb(220, 220, 224);
+        public static readonly Color TextDim = Rgb(148, 148, 156);
+        public static readonly Color Accent = Rgb(142, 132, 222);
+        public static readonly Color AccentSoft = new(142f / 255f, 132f / 255f, 222f / 255f, 0.22f);
+        public static readonly Color Live = Rgb(96, 190, 132);
+        public static readonly Color Recording = Rgb(222, 86, 92);
+        public static readonly Color Error = Rgb(226, 96, 96);
+        public static readonly Color Warning = Rgb(222, 170, 72);
+        public static readonly Color Log = Rgb(148, 148, 156);
+        public static readonly Color Bookmark = Rgb(92, 166, 214);
+        public static readonly Color Spawn = Rgb(88, 176, 160);
+        public static readonly Color Destroy = Rgb(146, 146, 156);
+        public static readonly Color SceneLoad = Rgb(208, 208, 214);
+        public static readonly Color Activity = new(142f / 255f, 132f / 255f, 222f / 255f, 0.5f);
         public static readonly Color Unrecorded = new(0f, 0f, 0f, 0.28f);
         public static readonly Color Hover = new(1f, 1f, 1f, 0.35f);
 

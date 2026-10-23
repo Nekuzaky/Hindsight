@@ -17,7 +17,8 @@ All notable changes to this package are documented here. The format follows
   Rigidbody and Rigidbody2D velocities are restored, and the recording forgets what came after. Also in
   **Tools > Hindsight** and as a shortcut you can bind.
 - **Lifecycle markers:** the timeline marks frames where objects appear or are destroyed ("3 objects appeared") and
-  where scenes load. They have their own filter chip and can be turned off in the preferences.
+  where scenes load. They have their own filter chip, off at first so spawning games do not bury the errors, and can be turned off
+  in the preferences.
 
 ### Changed
 

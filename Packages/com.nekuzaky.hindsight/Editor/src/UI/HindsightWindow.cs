@@ -105,6 +105,7 @@ namespace Nekuzaky.Hindsight.Editor
             _events = new EventsPanel();
             _events.MarkerPicked += ShowMarker;
             _events.FilterChanged += () => _timeline.Filter = _events.Filter;
+            _timeline.Filter = _events.Filter;
             _inspector = new InspectorPanel(_axis);
             _inspector.FrameRequested += Navigation.Show;
             _inspector.Notify += message => ShowNotification(new GUIContent(message), 4d);

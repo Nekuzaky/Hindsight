@@ -61,7 +61,7 @@ namespace Nekuzaky.Hindsight.Editor
         private Label _detailMessage;
         private VisualElement _detailLinks;
         private string _search = string.Empty;
-        private MarkerFilter _filter = new() { Errors = true, Warnings = true, Bookmarks = true, Logs = true, Lifecycle = true };
+        private MarkerFilter _filter = new() { Errors = true, Warnings = true, Bookmarks = true, Logs = true, Lifecycle = false };
         private int _builtVersion = -1;
         private Recorder _builtFor;
 

@@ -79,7 +79,7 @@ below -5 for ten frames is found once, where it crosses. Focus the field to see 
 
 ## Events
 
-Every recorded event, newest last. The chips filter errors, warnings, bookmarks, logs, and objects and scenes, and show their counts; the
+Every recorded event, newest last. The chips filter errors, warnings, bookmarks, logs, and objects and scenes (off at first, since spawning games add many), and show their counts; the
 search field filters by text. Selecting an event rewinds to it and shows its full message; each script line of its
 stack trace becomes a button that opens the script at that line.
 
