@@ -81,7 +81,7 @@ In Unity: **Window > Package Manager > + > Install package from git URL...** and
 https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight
 ```
 
-Pin a release by adding its tag, for example `...?path=Packages/com.nekuzaky.hindsight#v1.0.2`.
+Pin a release by adding its tag, for example `...?path=Packages/com.nekuzaky.hindsight#v1.1.0`.
 
 ## Quick start
 

@@ -3,7 +3,7 @@
 All notable changes to this package are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.1.0] - 2026-10-23
 
 ### Added
 
@@ -17,8 +17,8 @@ All notable changes to this package are documented here. The format follows
   Rigidbody and Rigidbody2D velocities are restored, and the recording forgets what came after. Also in
   **Tools > Hindsight** and as a shortcut you can bind.
 - **Lifecycle markers:** the timeline marks frames where objects appear or are destroyed ("3 objects appeared") and
-  where scenes load. They have their own filter chip, off at first so spawning games do not bury the errors, and can be turned off
-  in the preferences.
+  where scenes load. They have their own filter chip, off at first so spawning games do not bury the errors, and
+  can be turned off in the preferences.
 
 ### Changed
 
@@ -26,7 +26,9 @@ All notable changes to this package are documented here. The format follows
   same budget holds a longer history: 12 to 24 bytes per moving object and frame instead of 44. The benchmark scene
   with 1,000 moving objects went from 80.8 MB to 36.9 MB for 30 seconds. Checkpoints are also taken more often when
   frames come very fast, which keeps seeks short.
+- Softer colors (neutral greys, a muted violet) and visual polish: smaller corners, hover and keyboard focus states.
 - The package description says exactly what reaches a build: a 5 KB assembly whose calls are removed.
+- Code comments were removed from the sources.
 
 ## [1.0.2] - 2026-10-23
 

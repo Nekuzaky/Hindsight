@@ -1,42 +1,42 @@
 <!doctype html>
 <!-- Source of docs/images/banner.png (1280x400). Render with Tools/Render-Brand.ps1. -->
 <html><head><meta charset="utf-8"><title>Hindsight banner</title><style>
-:root { --bg:#0e1015; --border:#2c303a; --text:#e6e9ef; --dim:#8b92a2; --accent:#8b7cff; --error:#ff5c5c; --bookmark:#38bdf8; }
+:root { --bg:#121214; --border:#323237; --text:#dcdce0; --dim:#94949c; --accent:#8e84de; --error:#e26060; --bookmark:#5ca6d6; }
 * { box-sizing:border-box; margin:0; padding:0; }
 html, body { width:100%; height:100%; }
 body { font-family:'Inter','Segoe UI Variable Display','Segoe UI',system-ui,sans-serif; color:var(--text); overflow:hidden;
-  background: radial-gradient(1200px 520px at 78% 30%, rgba(139,124,255,.22), transparent 60%),
-              radial-gradient(900px 500px at 10% 110%, rgba(56,189,248,.10), transparent 60%), var(--bg); }
+  background: radial-gradient(1200px 520px at 78% 30%, rgba(142,132,222,.22), transparent 60%),
+              radial-gradient(900px 500px at 10% 110%, rgba(92,166,214,.10), transparent 60%), var(--bg); }
 .grid { position:absolute; inset:0; background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
   linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 40px 40px;
   -webkit-mask-image: radial-gradient(ellipse at 60% 40%, #000 30%, transparent 75%); }
 .logo { display:flex; align-items:center; gap:22px; }
 .mark { width:var(--mark); height:var(--mark); border-radius:calc(var(--mark) * .28); display:grid; place-items:center;
-  background: linear-gradient(145deg, #9d90ff, #6a5cf0); box-shadow: 0 12px 40px rgba(139,124,255,.45), inset 0 1px 0 rgba(255,255,255,.35); }
+  background: linear-gradient(145deg, #a097e6, #6f64c4); box-shadow: 0 12px 40px rgba(142,132,222,.45), inset 0 1px 0 rgba(255,255,255,.35); }
 .mark svg { width:58%; height:58%; fill:#fff; }
 h1 { font-size:var(--title); font-weight:800; letter-spacing:-.03em; line-height:1; }
-.tag { color:#c3c7d4; font-weight:600; }
+.tag { color:#c6c6cc; font-weight:600; }
 .sub { color:var(--dim); }
 .chips { display:flex; gap:12px; flex-wrap:wrap; }
-.chip { padding:9px 16px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--border); color:#cfd3de; font-weight:600; font-size:18px; }
+.chip { padding:9px 16px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--border); color:#d0d0d6; font-weight:600; font-size:18px; }
 .chip b { color:var(--accent); }
-.tl { position:absolute; border-radius:16px; background:linear-gradient(180deg, #1a1d25, #14161c); border:1px solid var(--border);
+.tl { position:absolute; border-radius:16px; background:linear-gradient(180deg, #1e1e21, #18181a); border:1px solid var(--border);
   box-shadow: 0 30px 80px rgba(0,0,0,.55); overflow:hidden; }
 .tl .ruler { height:30px; border-bottom:1px solid var(--border); position:relative; }
-.tl .tick { position:absolute; top:7px; font-size:13px; color:#5f6676; }
+.tl .tick { position:absolute; top:7px; font-size:13px; color:#66666e; }
 .bars { position:absolute; left:14px; right:14px; bottom:12px; height:var(--bars); display:flex; align-items:flex-end; gap:3px; }
-.bars i { flex:1; background:rgba(139,124,255,.55); border-radius:2px 2px 0 0; }
-.playhead { position:absolute; top:0; bottom:0; width:3px; background:var(--accent); box-shadow:0 0 18px rgba(139,124,255,.9); }
+.bars i { flex:1; background:rgba(142,132,222,.55); border-radius:2px 2px 0 0; }
+.playhead { position:absolute; top:0; bottom:0; width:3px; background:var(--accent); box-shadow:0 0 18px rgba(142,132,222,.9); }
 .playhead::before { content:''; position:absolute; top:0; left:-8px; border:9px solid transparent; border-top:11px solid var(--accent); }
-.past { position:absolute; top:31px; bottom:0; right:0; background:rgba(139,124,255,.12); }
+.past { position:absolute; top:31px; bottom:0; right:0; background:rgba(142,132,222,.12); }
 .label { position:absolute; top:4px; padding:3px 9px; border-radius:6px; background:var(--accent); color:#fff; font-weight:700; font-size:14px; }
-.dot { position:absolute; width:16px; height:16px; border-radius:50%; background:var(--error); box-shadow:0 0 14px rgba(255,92,92,.8); }
-.dia { position:absolute; width:15px; height:15px; background:var(--bookmark); transform:rotate(45deg); box-shadow:0 0 12px rgba(56,189,248,.8); }
-.scene { position:absolute; border-radius:16px; background:#14161c; border:1px solid var(--border); overflow:hidden; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
-.floor { position:absolute; height:8px; background:#3a4050; border-radius:3px; }
+.dot { position:absolute; width:16px; height:16px; border-radius:50%; background:var(--error); box-shadow:0 0 14px rgba(226,96,96,.8); }
+.dia { position:absolute; width:15px; height:15px; background:var(--bookmark); transform:rotate(45deg); box-shadow:0 0 12px rgba(92,166,214,.8); }
+.scene { position:absolute; border-radius:16px; background:#18181a; border:1px solid var(--border); overflow:hidden; box-shadow: 0 30px 80px rgba(0,0,0,.55); }
+.floor { position:absolute; height:8px; background:#3e3e44; border-radius:3px; }
 .ball { position:absolute; border-radius:50%; }
-.paddle { position:absolute; height:9px; border-radius:3px; background:#8b7cff; transform:rotate(-18deg); }
-.trail { position:absolute; width:4px; background:linear-gradient(180deg, rgba(139,124,255,.15), rgba(139,124,255,1)); border-radius:2px; }
+.paddle { position:absolute; height:9px; border-radius:3px; background:#8e84de; transform:rotate(-18deg); }
+.trail { position:absolute; width:4px; background:linear-gradient(180deg, rgba(142,132,222,.15), rgba(142,132,222,1)); border-radius:2px; }
 
 body { --mark:96px; --title:84px; }
 .left { position:absolute; left:72px; top:86px; width:600px; }
@@ -53,12 +53,12 @@ body { --mark:96px; --title:84px; }
   <div class="floor" style="left:24px; width:252px; top:164px"></div>
   <div class="trail" style="left:210px; top:19px; height:203px"></div>
   <div class="paddle" style="left:72px; top:98px; width:102px"></div>
-  <div class="ball" style="left:196px; top:216px; width:32px; height:32px; background:#ff5c5c;
-    box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 0 24px rgba(255,92,92,.8)"></div>
-  <div class="ball" style="left:60px; top:134px; width:30px; height:30px; background:#38bdf8"></div>
-  <div class="ball" style="left:87px; top:134px; width:30px; height:30px; background:#ffb020"></div>
-  <div class="ball" style="left:132px; top:42px; width:30px; height:30px; background:#8b7cff"></div>
-  <div class="ball" style="left:245px; top:134px; width:30px; height:30px; background:#3ddc84"></div>
+  <div class="ball" style="left:196px; top:216px; width:32px; height:32px; background:#e26060;
+    box-shadow:0 0 0 4px rgba(255,255,255,.85), 0 0 24px rgba(226,96,96,.8)"></div>
+  <div class="ball" style="left:60px; top:134px; width:30px; height:30px; background:#5ca6d6"></div>
+  <div class="ball" style="left:87px; top:134px; width:30px; height:30px; background:#deaa48"></div>
+  <div class="ball" style="left:132px; top:42px; width:30px; height:30px; background:#8e84de"></div>
+  <div class="ball" style="left:245px; top:134px; width:30px; height:30px; background:#60be84"></div>
 </div>
 
 <div class="tl" style="left:860px; top:236px; width:380px; height:140px; --bars:56px">
@@ -67,7 +67,7 @@ body { --mark:96px; --title:84px; }
   <div class="bars"><i style="height:15%"></i><i style="height:23%"></i><i style="height:14%"></i><i style="height:17%"></i><i style="height:35%"></i><i style="height:14%"></i><i style="height:41%"></i><i style="height:20%"></i><i style="height:39%"></i><i style="height:15%"></i><i style="height:19%"></i><i style="height:13%"></i><i style="height:57%"></i><i style="height:33%"></i><i style="height:23%"></i><i style="height:22%"></i><i style="height:58%"></i><i style="height:60%"></i><i style="height:34%"></i><i style="height:22%"></i><i style="height:17%"></i><i style="height:9%"></i><i style="height:23%"></i><i style="height:27%"></i><i style="height:17%"></i><i style="height:19%"></i><i style="height:27%"></i><i style="height:59%"></i><i style="height:24%"></i><i style="height:43%"></i><i style="height:66%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:51%"></i><i style="height:26%"></i><i style="height:15%"></i><i style="height:21%"></i><i style="height:36%"></i><i style="height:23%"></i><i style="height:44%"></i><i style="height:32%"></i><i style="height:15%"></i><i style="height:20%"></i><i style="height:52%"></i><i style="height:9%"></i><i style="height:47%"></i><i style="height:68%"></i><i style="height:17%"></i><i style="height:11%"></i><i style="height:32%"></i><i style="height:22%"></i><i style="height:9%"></i><i style="height:51%"></i><i style="height:32%"></i></div>
   <div class="dia" style="left:205px; top:44px"></div>
   <div class="dot" style="left:228px; top:44px"></div>
-  <div class="dot" style="left:315px; top:46px; width:12px; height:12px; background:#ffb020; box-shadow:0 0 12px rgba(255,176,32,.7)"></div>
+  <div class="dot" style="left:315px; top:46px; width:12px; height:12px; background:#deaa48; box-shadow:0 0 12px rgba(222,170,72,.7)"></div>
   <div class="playhead" style="left:220px"></div>
   <div class="label" style="left:230px">-2.315 s</div>
 </div>
