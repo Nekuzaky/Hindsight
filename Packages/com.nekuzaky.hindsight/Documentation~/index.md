@@ -28,3 +28,4 @@ the compiler removes those calls, so no Hindsight code runs in a player.
   of a millisecond per frame and never allocates managed memory once warmed up.
 - **Rewind in place.** The real objects move back, with their real materials, lights and cameras, so the Scene view
   and the Game view both show the past.
+- **Save and share.** A recording saved to a `.hindsight` file opens later, outside Play Mode, in the same scene.

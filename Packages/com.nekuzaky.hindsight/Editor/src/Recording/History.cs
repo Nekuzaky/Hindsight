@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Unity.Burst;
 using Unity.Collections;
 using Unity.Jobs;
@@ -292,10 +293,71 @@ namespace Nekuzaky.Hindsight.Editor
             _checkpoints.Dispose();
         }
 
+        /// <summary>Writes every kept frame, delta and checkpoint. The frame must not be open.</summary>
+        public void WriteTo(BinaryWriter writer, byte[] buffer)
+        {
+            Debug.Assert(!HasOpenFrame, "Commit the pending frame before saving.");
+            writer.Write(WindowSeconds);
+            writer.Write(OldestSequence);
+            writer.Write(_next);
+            for (var sequence = OldestSequence; sequence < _next; sequence++)
+                WriteFrame(writer, Frame(sequence));
+            Transforms.WriteTo(writer, buffer);
+            Values.WriteTo(writer, buffer);
+            _checkpoints.WriteTo(writer, buffer);
+        }
+
+        public void ReadFrom(BinaryReader reader, byte[] buffer, int maxSlots, int maxStreams)
+        {
+            WindowSeconds = reader.ReadDouble();
+            OldestSequence = reader.ReadInt32();
+            _next = reader.ReadInt32();
+            NativeIO.CheckCount((long)_next - OldestSequence, _frames.Length - 1, "frames");
+            for (var sequence = OldestSequence; sequence < _next; sequence++)
+                _frames[sequence % _frames.Length] = ReadFrame(reader, sequence);
+            Transforms.ReadFrom(reader, buffer);
+            Values.ReadFrom(reader, buffer);
+            _checkpoints.ReadFrom(reader, buffer, maxSlots, maxStreams);
+            HasOpenFrame = false;
+            if (!IsEmpty && (_checkpoints.Count == 0 || _checkpoints.SequenceAt(0) != OldestSequence))
+                throw new InvalidDataException("The recording is damaged: its oldest frame has no checkpoint.");
+        }
+
         #endregion
 
 
         #region Tools and Utilities
+
+        private static void WriteFrame(BinaryWriter writer, in FrameRecord frame)
+        {
+            writer.Write(frame.GameFrame);
+            writer.Write(frame.GameTime);
+            writer.Write(frame.RealTime);
+            writer.Write(frame.TimeScale);
+            writer.Write(frame.TransformStart);
+            writer.Write(frame.TransformCount);
+            writer.Write(frame.TransformWords);
+            writer.Write(frame.ValueStart);
+            writer.Write(frame.ValueCount);
+        }
+
+        private static FrameRecord ReadFrame(BinaryReader reader, int sequence)
+        {
+            return new FrameRecord
+            {
+                Sequence = sequence,
+                GameFrame = reader.ReadInt32(),
+                GameTime = reader.ReadDouble(),
+                RealTime = reader.ReadDouble(),
+                TimeScale = reader.ReadSingle(),
+                TransformStart = reader.ReadInt64(),
+                TransformCount = reader.ReadInt32(),
+                TransformWords = reader.ReadInt32(),
+                ValueStart = reader.ReadInt64(),
+                ValueCount = reader.ReadInt32(),
+                Committed = true
+            };
+        }
 
         private bool IsCheckpointDue(int sequence, double realTime)
         {

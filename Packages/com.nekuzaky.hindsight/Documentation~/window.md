@@ -13,6 +13,9 @@ Open it with **Tools > Hindsight > Open Hindsight**, **Window > Analysis > Hinds
 | Memory | Memory holding the frames kept now. The tooltip shows how much was reserved (the memory budget). |
 | Cost | Main-thread time Hindsight used per captured frame, smoothed. The tooltip adds the 95th percentile. |
 | Bookmark | Adds a bookmark at the current frame (`F9`). |
+| Save | Saves the recording to a `.hindsight` file. See [saving and opening recordings](#saving-and-opening-recordings). |
+| Open | Opens a saved recording, outside Play Mode. |
+| Close | Shown while a saved recording is open: closes it and puts every object back. |
 | Record | Turns recording in Play Mode on or off. Off, Hindsight costs nothing at all. |
 | Gear | Opens the [preferences](settings.md). |
 | Question mark | Opens this documentation. |
@@ -88,3 +91,19 @@ to rewind. The header buttons frame the object in the Scene view and copy its Tr
 so you can paste the values after leaving Play Mode (right-click the Transform > **Paste Component Values**).
 
 If the object is not recorded, the panel says why: static, excluded layer, camera excluded, or the object limit.
+
+## Saving and opening recordings
+
+Click **Save** (or **Tools > Hindsight > Save Recording...**) while a recording is in memory, in Play Mode. The file
+holds every kept frame, the events with their stack traces, and the values of every object, bit for bit; it is about
+as large as the memory shown in the header.
+
+To look at it later, leave Play Mode, open the scene it was recorded in and click **Open** (or **Tools > Hindsight >
+Open Recording...**). The window shows the timeline, the events, the graphs and **Find when** as they were. Dragging
+the timeline moves the objects of the open scene to where they were: each recorded object is found again by its place
+in the hierarchy (scene, parents, name and sibling index). Objects created while playing, or renamed or moved since,
+have no counterpart: their events and values stay in the window, and the header's object count tooltip says how many
+were not found.
+
+The scene is put back as it was when you click **Live** or **Close**, enter Play Mode, save the scene, open another
+one, or when scripts recompile. Rewinding never changes what is saved in your scene.

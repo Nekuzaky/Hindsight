@@ -96,6 +96,7 @@ namespace Nekuzaky.Hindsight.Editor
         public void EndFrame(in FrameClock clock)
         {
             Debug.Assert(!IsDisposed, "EndFrame on a disposed recorder.");
+            Debug.Assert(!IsFromFile, "A recording opened from a file is only viewed.");
             if (_pending)
                 Commit();
 

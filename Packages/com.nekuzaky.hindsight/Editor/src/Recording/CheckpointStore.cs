@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Unity.Collections;
 using UnityEngine;
 
@@ -150,6 +151,40 @@ namespace Nekuzaky.Hindsight.Editor
         {
             ref readonly var entry = ref _entries[(_start + index) % Capacity];
             return stream < entry.StreamCount ? entry.Values[stream] : ValueSample.Unset;
+        }
+
+        public void WriteTo(BinaryWriter writer, byte[] buffer)
+        {
+            writer.Write(Count);
+            for (var i = 0; i < Count; i++)
+            {
+                ref readonly var entry = ref _entries[(_start + i) % Capacity];
+                writer.Write(entry.Sequence);
+                writer.Write(entry.SlotCount);
+                writer.Write(entry.StreamCount);
+                NativeIO.Write(writer, entry.Transforms, 0, entry.SlotCount, buffer);
+                NativeIO.Write(writer, entry.Values, 0, entry.StreamCount, buffer);
+            }
+        }
+
+        public void ReadFrom(BinaryReader reader, byte[] buffer, int maxSlots, int maxStreams)
+        {
+            Clear();
+            var count = NativeIO.CheckCount(reader.ReadInt32(), Capacity, "checkpoints");
+            for (var i = 0; i < count; i++)
+            {
+                ref var entry = ref _entries[i];
+                entry.Sequence = reader.ReadInt32();
+                entry.SlotCount = NativeIO.CheckCount(reader.ReadInt32(), maxSlots, "slots in a checkpoint");
+                entry.StreamCount = NativeIO.CheckCount(reader.ReadInt32(), maxStreams, "streams in a checkpoint");
+                Reserve(ref entry.Transforms, entry.SlotCount);
+                Reserve(ref entry.Values, entry.StreamCount);
+                NativeIO.Read(reader, entry.Transforms, 0, entry.SlotCount, buffer);
+                NativeIO.Read(reader, entry.Values, 0, entry.StreamCount, buffer);
+                if (i > 0 && entry.Sequence <= _entries[i - 1].Sequence)
+                    throw new InvalidDataException("The recording is damaged: checkpoints out of order.");
+                Count++;
+            }
         }
 
         public void Dispose()

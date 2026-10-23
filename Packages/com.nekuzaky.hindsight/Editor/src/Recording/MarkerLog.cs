@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
@@ -140,6 +141,43 @@ namespace Nekuzaky.Hindsight.Editor
             Array.Clear(_items, 0, _items.Length);
             _start = 0;
             Count = 0;
+            Version++;
+        }
+
+        public void WriteTo(BinaryWriter writer)
+        {
+            writer.Write(Count);
+            for (var i = 0; i < Count; i++)
+            {
+                ref readonly var marker = ref this[i];
+                writer.Write(marker.Sequence);
+                writer.Write(marker.LastSequence);
+                writer.Write(marker.RealTime);
+                writer.Write((byte)marker.Kind);
+                writer.Write(marker.Count);
+                writer.Write(marker.Message ?? string.Empty);
+                writer.Write(marker.StackTrace ?? string.Empty);
+            }
+        }
+
+        public void ReadFrom(BinaryReader reader)
+        {
+            Clear();
+            var count = NativeIO.CheckCount(reader.ReadInt32(), _items.Length, "events");
+            for (var i = 0; i < count; i++)
+            {
+                _items[i] = new Marker
+                {
+                    Sequence = reader.ReadInt32(),
+                    LastSequence = reader.ReadInt32(),
+                    RealTime = reader.ReadDouble(),
+                    Kind = (MarkerKind)reader.ReadByte(),
+                    Count = reader.ReadInt32(),
+                    Message = reader.ReadString(),
+                    StackTrace = reader.ReadString()
+                };
+            }
+            Count = count;
             Version++;
         }
 

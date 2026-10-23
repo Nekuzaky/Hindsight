@@ -53,6 +53,9 @@ namespace Nekuzaky.Hindsight.Editor
         private Label _offsetLabel;
         private Label _frameLabel;
         private Button _recordButton;
+        private Button _saveButton;
+        private Button _openButton;
+        private Button _closeButton;
         private Button _pauseButton;
         private Button _liveButton;
         private VisualElement _recordIcon;
@@ -149,6 +152,12 @@ namespace Nekuzaky.Hindsight.Editor
             header.Add(spacer);
 
             header.Add(HeaderButton(Glyphs.AddBookmark, "Add a bookmark at this frame (F9)", () => HindsightSession.AddBookmark()));
+            _saveButton = HeaderButton(Glyphs.Save, "Save this recording to a file", RecordingCommands.SaveWithDialog);
+            header.Add(_saveButton);
+            _openButton = HeaderButton(Glyphs.OpenFile, "Open a saved recording (outside Play Mode)", RecordingCommands.OpenWithDialog);
+            header.Add(_openButton);
+            _closeButton = HeaderButton(Glyphs.Close, "Close the saved recording and put every object back", HindsightSession.Close);
+            header.Add(_closeButton);
             _recordButton = HeaderButton(Glyphs.Record, "Record in Play Mode", ToggleRecording);
             _recordIcon = _recordButton.Q(className: "hs-icon");
             header.Add(_recordButton);
@@ -290,8 +299,15 @@ namespace Nekuzaky.Hindsight.Editor
                 SessionStatus.Paused => "Paused",
                 SessionStatus.Rewinding => "Rewinding",
                 SessionStatus.Off => "Off",
+                SessionStatus.Viewing => "Saved recording",
                 _ => "Idle"
             };
+            var file = HindsightSession.OpenedFile;
+            _statusPill.tooltip = file ?? string.Empty;
+            _statusPill.EnableInClassList("hs-pill--file", file != null);
+            _saveButton.SetEnabled(RecordingCommands.CanSave());
+            _openButton.SetEnabled(RecordingCommands.CanOpen());
+            _closeButton.style.display = file != null ? DisplayStyle.Flex : DisplayStyle.None;
             _statusPill.EnableInClassList("hs-pill--recording", status == SessionStatus.Recording);
             _statusPill.EnableInClassList("hs-pill--paused", status == SessionStatus.Paused);
             _statusPill.EnableInClassList("hs-pill--rewinding", status == SessionStatus.Rewinding);
@@ -312,6 +328,13 @@ namespace Nekuzaky.Hindsight.Editor
                 return;
             }
             _objectsStat.text = $"{Format.Integer(recorder.AliveCount)} / {Format.Integer(recorder.SlotCount)}";
+            if (recorder.IsFromFile)
+            {
+                _objectsStat.parent.tooltip = $"{Format.Integer(recorder.MatchedObjects)} objects found in the open scenes, {Format.Integer(recorder.MissingObjects)} not found (created while playing, renamed or moved since).";
+                _memoryStat.text = Format.Bytes(recorder.History.UsedBytes);
+                _costStat.text = "—";
+                return;
+            }
             _memoryStat.text = Format.Bytes(recorder.History.UsedBytes);
             _memoryStat.parent.tooltip = $"{Format.Bytes(recorder.History.UsedBytes)} hold the frames kept now, out of {Format.Bytes(recorder.SizeInBytes)} reserved when Play Mode started (memory budget in the preferences).";
             _costStat.text = Format.Milliseconds(recorder.Stats.AverageMilliseconds);
@@ -346,7 +369,7 @@ namespace Nekuzaky.Hindsight.Editor
             else if (status == SessionStatus.Idle)
             {
                 _emptyTitle.text = "Press Play to start recording";
-                _emptyText.text = "Hindsight records your scene while you play. When something goes wrong, pause and drag the timeline back to see every object exactly as it was. Nothing is added to your builds.";
+                _emptyText.text = "Hindsight records your scene while you play. When something goes wrong, pause and drag the timeline back to see every object exactly as it was. Nothing is added to your builds. To look at a recording saved earlier, open it with the folder button.";
                 _emptyButton.text = "Enter Play Mode";
                 _emptyButton.clickable = new Clickable(() => EditorApplication.isPlaying = true);
             }

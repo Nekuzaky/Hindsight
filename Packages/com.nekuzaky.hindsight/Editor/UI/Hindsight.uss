@@ -86,6 +86,7 @@
 .hs-root .hs-pill--recording { background-color: rgba(255, 77, 94, 0.16); color: rgb(255, 120, 132); }
 .hs-root .hs-pill--paused { background-color: rgba(255, 176, 32, 0.16); color: rgb(255, 196, 92); }
 .hs-root .hs-pill--rewinding { background-color: rgba(139, 124, 255, 0.2); color: rgb(178, 168, 255); }
+.hs-root .hs-pill--file { background-color: rgba(56, 189, 248, 0.16); color: rgb(125, 211, 252); }
 
 .hs-stats { flex-direction: row; align-items: center; flex-shrink: 1; overflow: hidden; }
 

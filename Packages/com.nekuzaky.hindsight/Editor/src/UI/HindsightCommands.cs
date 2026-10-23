@@ -52,6 +52,24 @@ namespace Nekuzaky.Hindsight.Editor
         [MenuItem("Tools/Hindsight/Add Bookmark", true)]
         public static bool CanAddBookmark() => HindsightSession.IsRecording;
 
+        [MenuItem("Tools/Hindsight/Save Recording...", priority = 20)]
+        public static void SaveRecording() => RecordingCommands.SaveWithDialog();
+
+        [MenuItem("Tools/Hindsight/Save Recording...", true)]
+        public static bool CanSaveRecording() => RecordingCommands.CanSave();
+
+        [MenuItem("Tools/Hindsight/Open Recording...", priority = 21)]
+        public static void OpenRecording() => RecordingCommands.OpenWithDialog();
+
+        [MenuItem("Tools/Hindsight/Open Recording...", true)]
+        public static bool CanOpenRecording() => RecordingCommands.CanOpen();
+
+        [MenuItem("Tools/Hindsight/Close Recording", priority = 22)]
+        public static void CloseRecording() => HindsightSession.Close();
+
+        [MenuItem("Tools/Hindsight/Close Recording", true)]
+        public static bool CanCloseRecording() => HindsightSession.OpenedFile != null;
+
         [MenuItem("Tools/Hindsight/Documentation", priority = 40)]
         public static void OpenDocumentation() => Application.OpenURL(HindsightWindow.DocumentationUrl);
 

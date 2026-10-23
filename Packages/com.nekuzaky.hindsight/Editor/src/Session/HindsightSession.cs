@@ -1,6 +1,8 @@
 using System;
 using System.Diagnostics;
+using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
@@ -18,7 +20,9 @@ namespace Nekuzaky.Hindsight.Editor
         /// <summary>The game is paused and the scene shows the live state.</summary>
         Paused,
         /// <summary>The game is paused and the scene shows a past frame.</summary>
-        Rewinding
+        Rewinding,
+        /// <summary>A saved recording is open outside Play Mode and the scene shows the edited state.</summary>
+        Viewing
     }
 
     /// <summary>
@@ -37,12 +41,18 @@ namespace Nekuzaky.Hindsight.Editor
 
         public static Rewind Rewind { get; private set; }
 
-        public static bool IsRecording => Recorder != null;
+        /// <summary>True while a game is being recorded; false when nothing is, or when a saved recording is open.</summary>
+        public static bool IsRecording => Recorder != null && OpenedFile == null;
+
+        /// <summary>Path of the saved recording open outside Play Mode, or null.</summary>
+        public static string OpenedFile { get; private set; }
 
         public static SessionStatus Status
         {
             get
             {
+                if (OpenedFile != null)
+                    return Rewind != null && Rewind.IsActive ? SessionStatus.Rewinding : SessionStatus.Viewing;
                 if (!EditorApplication.isPlaying)
                     return SessionStatus.Idle;
                 if (Recorder == null)
@@ -79,8 +89,10 @@ namespace Nekuzaky.Hindsight.Editor
             EditorApplication.pauseStateChanged += OnPauseStateChanged;
             EditorApplication.hierarchyChanged += OnHierarchyChanged;
             EditorApplication.update += OnEditorUpdate;
-            AssemblyReloadEvents.beforeAssemblyReload += Stop;
-            EditorApplication.quitting += Stop;
+            AssemblyReloadEvents.beforeAssemblyReload += StopAll;
+            EditorApplication.quitting += StopAll;
+            EditorSceneManager.sceneSaving += OnSceneSaving;
+            EditorSceneManager.sceneOpened += OnSceneOpened;
             HindsightSettings.Changed += OnSettingsChanged;
 
             // Scripts recompiled during Play Mode: pick recording up again.
@@ -93,6 +105,7 @@ namespace Nekuzaky.Hindsight.Editor
         {
             if (!EditorApplication.isPlaying || Recorder != null || !HindsightSettings.instance.RecordInPlayMode)
                 return;
+            Debug.Assert(OpenedFile == null, "A saved recording is closed before Play Mode starts.");
 
             var settings = HindsightSettings.instance;
             TrackedMembers.Invalidate();
@@ -115,7 +128,7 @@ namespace Nekuzaky.Hindsight.Editor
         /// <summary>Stops recording and frees its memory. The scene is put back live first.</summary>
         public static void Stop()
         {
-            if (Recorder == null)
+            if (Recorder == null || OpenedFile != null)
                 return;
 
             PlayerLoopHook.Uninstall();
@@ -140,9 +153,67 @@ namespace Nekuzaky.Hindsight.Editor
         {
             if (Recorder == null)
                 return false;
-            if (!EditorApplication.isPaused)
+            if (EditorApplication.isPlaying && !EditorApplication.isPaused)
                 EditorApplication.isPaused = true;
             return Rewind.Show(sequence);
+        }
+
+        /// <summary>Saves the current recording. Returns null, or why it failed.</summary>
+        public static string Save(string path)
+        {
+            if (Recorder == null || Recorder.History.IsEmpty)
+                return "Nothing is recorded yet.";
+            try
+            {
+                RecordingFile.Save(Recorder, path);
+                return null;
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException)
+            {
+                return exception.Message;
+            }
+        }
+
+        /// <summary>
+        /// Opens a saved recording outside Play Mode. Its objects are matched with the open scenes by their place in
+        /// the hierarchy. Returns null, or why it failed.
+        /// </summary>
+        public static string Open(string path)
+        {
+            if (EditorApplication.isPlaying)
+                return "Leave Play Mode to open a saved recording.";
+            Recorder recorder;
+            try
+            {
+                recorder = RecordingFile.Load(path, out _);
+            }
+            catch (Exception exception) when (exception is IOException || exception is InvalidDataException
+                || exception is UnauthorizedAccessException || exception is ArgumentException)
+            {
+                return exception.Message;
+            }
+
+            Close();
+            Recorder = recorder;
+            Rewind = new Rewind(recorder) { HideObjectsNotYetSpawned = HindsightSettings.instance.HideObjectsNotYetSpawned };
+            Rewind.Changed += OnRewindChanged;
+            OpenedFile = path;
+            StatusChanged?.Invoke();
+            return null;
+        }
+
+        /// <summary>Closes the saved recording, after putting every object back where it was.</summary>
+        public static void Close()
+        {
+            if (OpenedFile == null)
+                return;
+            Rewind.Changed -= OnRewindChanged;
+            Rewind.Dispose();
+            Rewind = null;
+            Recorder.Dispose();
+            Recorder = null;
+            OpenedFile = null;
+            StatusChanged?.Invoke();
         }
 
         public static void ReturnToLive() => Rewind?.ReturnToLive();
@@ -150,7 +221,7 @@ namespace Nekuzaky.Hindsight.Editor
         /// <summary>Adds a bookmark at the current frame. Returns false when nothing is recording.</summary>
         public static bool AddBookmark(string label = null)
         {
-            if (Recorder == null)
+            if (!IsRecording)
                 return false;
             Recorder.AddMarker(MarkerKind.Bookmark, label ?? string.Empty, string.Empty, Time.unscaledTimeAsDouble);
             return true;
@@ -167,9 +238,27 @@ namespace Nekuzaky.Hindsight.Editor
                 Start();
             else if (change == PlayModeStateChange.ExitingPlayMode)
                 Stop();
+            else if (change == PlayModeStateChange.ExitingEditMode)
+                Close();
             else
                 StatusChanged?.Invoke();
         }
+
+        private static void StopAll()
+        {
+            Stop();
+            Close();
+        }
+
+        // A rewound scene must never be saved: the objects go back to their edited state first.
+        private static void OnSceneSaving(Scene scene, string path)
+        {
+            if (OpenedFile != null)
+                Rewind.ReturnToLive();
+        }
+
+        // Another scene means other objects: the matches made when the recording was opened no longer hold.
+        private static void OnSceneOpened(Scene scene, OpenSceneMode mode) => Close();
 
         private static void OnPauseStateChanged(PauseState state)
         {

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Nekuzaky.Hindsight.Editor
@@ -67,6 +68,21 @@ namespace Nekuzaky.Hindsight.Editor
                 settings.IgnoreCameras,
                 settings.LayerMask,
                 settings.MarkObjectLifecycle);
+        }
+
+        #endregion
+
+
+        #region Main API
+
+        /// <summary>Options sized to hold a recording read from a file, whatever the current settings are.</summary>
+        public static RecorderOptions ForFile(double historySeconds, long transformWords, long valueEntries, int checkpoints, int slots)
+        {
+            var transformBudget = (transformWords + MinimumRingEntries) * TransformWordBytes * 100 / 70 + 1;
+            var valueBudget = (valueEntries + MinimumRingEntries) * ValueDeltaBytes * 100 / 15 + 1;
+            var seconds = Math.Max(Math.Max(historySeconds, 1d), (checkpoints - 64) / 2d + 1d);
+            return new RecorderOptions(seconds, Math.Max(transformBudget, valueBudget), 0d, Math.Max(1, slots),
+                true, true, true, false, ~0, false);
         }
 
         #endregion

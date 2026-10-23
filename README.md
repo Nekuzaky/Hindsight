@@ -53,6 +53,8 @@ make it happen again.
   graph over the whole recording that never hides a one-frame spike.
 - **Your variables on the timeline.** `[HindsightTrack]` on a field, or right-click it in the Inspector and choose
   **Track in Hindsight**. `Hindsight.Bookmark("...")` from code, or `F9`.
+- **Save the recording, open it later.** A bug you caught becomes a `.hindsight` file you attach to the bug report;
+  a teammate opens it in the same scene and scrubs through it without playing.
 - **Motion trails** of the selected objects in the Scene view, with the errors marked on the path.
 - **Stack traces you can click.** Every script line of an event's stack trace opens the script at that line.
 - **Zero cost in builds.** The recorder and the window live in an editor-only assembly. Your build only gets a 5 KB

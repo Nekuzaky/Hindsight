@@ -110,12 +110,13 @@ namespace Nekuzaky.Hindsight.Editor
                 SessionStatus.Paused => "Paused · drag the timeline back",
                 SessionStatus.Rewinding => "Rewound",
                 SessionStatus.Off => "Recording off",
+                SessionStatus.Viewing => "Saved recording · drag the timeline",
                 _ => "Ready · press Play"
             };
 
             _dot.EnableInClassList("hs-overlay__dot--recording", status == SessionStatus.Recording);
             _dot.EnableInClassList("hs-overlay__dot--rewinding", status == SessionStatus.Rewinding);
-            _dot.EnableInClassList("hs-overlay__dot--paused", status == SessionStatus.Paused);
+            _dot.EnableInClassList("hs-overlay__dot--paused", status == SessionStatus.Paused || status == SessionStatus.Viewing);
 
             _offset.text = string.Empty;
             if (status == SessionStatus.Rewinding && recorder != null)
@@ -126,7 +127,7 @@ namespace Nekuzaky.Hindsight.Editor
                     _offset.text = Format.Offset(history.Frame(sequence).RealTime - history.Frame(history.NewestSequence).RealTime);
             }
 
-            var canNavigate = status == SessionStatus.Paused || status == SessionStatus.Rewinding;
+            var canNavigate = status == SessionStatus.Paused || status == SessionStatus.Rewinding || status == SessionStatus.Viewing;
             _controls.style.display = canNavigate ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
