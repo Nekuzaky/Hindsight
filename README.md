@@ -7,7 +7,7 @@
   <a href="https://github.com/Nekuzaky/Hindsight/releases"><img alt="Release" src="https://img.shields.io/github/v/tag/Nekuzaky/Hindsight?label=release&color=8b7cff"></a>
   <img alt="Cost in builds: 0 ms" src="https://img.shields.io/badge/cost%20in%20builds-0%20ms-3ddc84">
   <img alt="GC per frame: 0 B" src="https://img.shields.io/badge/GC%20per%20frame-0%20B-3ddc84">
-  <img alt="Tests: 26 EditMode" src="https://img.shields.io/badge/tests-26%20EditMode-38bdf8">
+  <img alt="Tests: 52 EditMode" src="https://img.shields.io/badge/tests-52%20EditMode-38bdf8">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-8b92a2"></a>
 </p>
 
