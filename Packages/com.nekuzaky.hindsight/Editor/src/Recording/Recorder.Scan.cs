@@ -43,14 +43,14 @@ namespace Nekuzaky.Hindsight.Editor
         private struct RootState
         {
             public int Count;
-            public int Signature;
+            public EntityId Signature;
         }
 
         private readonly List<GameObject> _roots = new(256);
         private readonly List<Transform> _hierarchy = new(1024);
-        private readonly HashSet<int> _ignored = new();
-        private Dictionary<int, RootState> _rootStates = new(256);
-        private Dictionary<int, RootState> _nextRootStates = new(256);
+        private readonly HashSet<EntityId> _ignored = new();
+        private Dictionary<EntityId, RootState> _rootStates = new(256);
+        private Dictionary<EntityId, RootState> _nextRootStates = new(256);
         private GameObject _probe;
         private bool _scanEverything = true;
         private bool _incomplete;
@@ -106,7 +106,7 @@ namespace Nekuzaky.Hindsight.Editor
         {
             var transform = root.transform;
             var state = new RootState { Count = transform.hierarchyCount, Signature = Signature(transform) };
-            var id = root.GetInstanceID();
+            var id = root.GetEntityId();
             _incomplete = false;
 
             if (_scanEverything || !_rootStates.TryGetValue(id, out var known))
@@ -166,7 +166,7 @@ namespace Nekuzaky.Hindsight.Editor
                     continue;
                 if (!ShouldRecord(transform))
                 {
-                    _ignored.Add(transform.GetInstanceID());
+                    _ignored.Add(transform.GetEntityId());
                     found++;
                     continue;
                 }
@@ -183,12 +183,12 @@ namespace Nekuzaky.Hindsight.Editor
 
         private bool IsKnown(Transform transform)
         {
-            var id = transform.GetInstanceID();
+            var id = transform.GetEntityId();
             return _slotById.ContainsKey(id) || _ignored.Contains(id);
         }
 
-        /// <summary>Instance id of the last child of the last child, and so on: new objects usually land there.</summary>
-        private static int Signature(Transform root)
+        /// <summary>Id of the last child of the last child, and so on: new objects usually land there.</summary>
+        private static EntityId Signature(Transform root)
         {
             var current = root;
             for (var depth = 0; depth < MaxBranchDepth; depth++)
@@ -198,7 +198,7 @@ namespace Nekuzaky.Hindsight.Editor
                     break;
                 current = current.GetChild(count - 1);
             }
-            return current.GetInstanceID();
+            return current.GetEntityId();
         }
 
         private bool ShouldRecord(Transform transform)

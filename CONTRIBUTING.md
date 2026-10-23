@@ -32,7 +32,9 @@ Hindsight follows the spirit of NASA's *Power of 10* rules, adapted to C#:
 - `Debug.Assert` guards the invariants of the recording core.
 - Return values are checked; settings are clamped when they are set.
 - No `unsafe` code. Native memory goes through `NativeArray`.
-- Every assembly compiles with `-warnaserror+` (`csc.rsp` next to each `.asmdef`): zero warnings.
+- Zero compiler warnings. `Tools/Compile.ps1` fails on any warning (`-Full` rebuilds everything), and the development
+  assemblies under `Assets` build with `-warnaserror+`. The package itself does not force warnings as errors: a
+  deprecation in a future Unity version must never stop someone else's project from compiling.
 
 Style: 4 spaces, `_camelCase` private fields, `#region` blocks like the existing files, English everywhere.
 The window styles live in `Editor/UI/Hindsight.uss`.

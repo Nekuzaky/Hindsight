@@ -3,8 +3,10 @@
     Checks the code rules Hindsight follows (adapted from NASA's Power of 10) on the package and dev sources.
 .DESCRIPTION
     - Functions are at most 60 lines long.
-    - No goto, no unsafe code, no direct recursion.
-    - Every assembly definition has a csc.rsp next to it that turns warnings into errors.
+    - No goto, no unsafe code, no direct recursion, no warning silenced with #pragma.
+    - Development assemblies (under Assets) build with warnings as errors (csc.rsp with -warnaserror+).
+    - The package never forces warnings as errors: a deprecation in a future Unity version must not stop someone
+      else's project from compiling. Zero warnings in the package is enforced by Tools/Compile.ps1 instead.
     It is a lightweight text check, not a C# parser: it reads brace-delimited bodies after method signatures.
 .EXAMPLE
     ./Tools/Check-Rules.ps1
@@ -29,6 +31,7 @@ foreach ($file in $files) {
         $line = $lines[$i]
         if ($line -cmatch '\bgoto\b') { $problems.Add("${relative}:$($i + 1) uses goto") }
         if ($line -cmatch '\bunsafe\b' -and $line -notmatch '^\s*//') { $problems.Add("${relative}:$($i + 1) uses unsafe code") }
+        if ($line -match '#pragma\s+warning\s+disable') { $problems.Add("${relative}:$($i + 1) silences a warning") }
 
         # A signature may wrap over a few lines: join them until the parameter list closes.
         $start = $i
@@ -62,9 +65,13 @@ foreach ($file in $files) {
 }
 
 Get-ChildItem $folders -Recurse -Filter '*.asmdef' | Where-Object { $_.FullName -notmatch '\\Samples~\\' } | ForEach-Object {
+    $asmdef = $_.FullName.Substring($root.Length + 1)
     $rsp = Join-Path $_.DirectoryName 'csc.rsp'
-    if (-not (Test-Path $rsp) -or -not (Select-String -Path $rsp -Pattern 'warnaserror\+' -Quiet)) {
-        $problems.Add("$($_.FullName.Substring($root.Length + 1)) has no csc.rsp with -warnaserror+")
+    $strict = (Test-Path $rsp) -and (Select-String -Path $rsp -Pattern 'warnaserror\+' -Quiet)
+    if ($asmdef.StartsWith('Packages\') -and $strict) {
+        $problems.Add("$asmdef ships -warnaserror+: a deprecation in a future Unity version would break users' projects")
+    } elseif ($asmdef.StartsWith('Assets\') -and -not $strict) {
+        $problems.Add("$asmdef has no csc.rsp with -warnaserror+")
     }
 }
 
@@ -73,4 +80,4 @@ if ($problems.Count -gt 0) {
     Write-Host "$($problems.Count) problem(s) in $($files.Count) files." -ForegroundColor Red
     exit 1
 }
-Write-Host "Rules respected in $($files.Count) files: functions <= $MaxLines lines, no recursion, no goto, no unsafe, warnings as errors." -ForegroundColor Green
+Write-Host "Rules respected in $($files.Count) files: functions <= $MaxLines lines, no recursion, no goto, no unsafe, no silenced warnings." -ForegroundColor Green

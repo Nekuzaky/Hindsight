@@ -3,6 +3,24 @@
 All notable changes to this package are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.0.1] - 2026-10-23
+
+### Fixed
+
+- The package did not compile on Unity 6000.5 and newer, where `Object.GetInstanceID()` is obsolete as an error.
+  Hindsight now identifies objects with `EntityId`, which exists since Unity 6000.3.
+
+### Changed
+
+- The package no longer turns compiler warnings into errors in your project, so a deprecation in a future Unity
+  version cannot stop your project from compiling. Hindsight itself is still developed with zero warnings.
+
+### Verified
+
+- Field test in a first-person HDRP game on Unity 6000.5.9f1: 1,803 objects recorded, 0.018 ms per frame on average
+  (95th percentile 0.022 ms), no managed allocation over 53,885 frames, 200 random rewinds averaging 0.10 ms, and the
+  scene restored exactly every time.
+
 ## [1.0.0] - 2026-10-23
 
 First release.

@@ -16,13 +16,13 @@ https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight
 To stay on a given release, add its tag at the end:
 
 ```
-https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight#v1.0.0
+https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight#v1.0.1
 ```
 
 You can also add the line to `Packages/manifest.json` yourself:
 
 ```json
-"com.nekuzaky.hindsight": "https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight#v1.0.0"
+"com.nekuzaky.hindsight": "https://github.com/Nekuzaky/Hindsight.git?path=Packages/com.nekuzaky.hindsight#v1.0.1"
 ```
 
 ## Your first rewind, with the demo

@@ -162,7 +162,7 @@ namespace Nekuzaky.Hindsight.Editor
         {
             var history = recorder.History;
             var active = Selection.activeTransform;
-            var selection = (active != null ? active.GetInstanceID() : 0) ^ Selection.transforms.Length;
+            var selection = (active != null ? active.GetEntityId().GetHashCode() : 0) ^ Selection.transforms.Length;
             var stale = history.OldestSequence != _builtOldest || history.NewestSequence != _builtNewest || selection != _builtSelection;
             var now = EditorApplication.timeSinceStartup;
             if (!stale || (!EditorApplication.isPaused && selection == _builtSelection && now - _lastBuild < LiveRefreshInterval))

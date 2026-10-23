@@ -31,7 +31,7 @@ namespace Nekuzaky.Hindsight.Editor
         public bool TryGetSlot(Transform transform, out int slot)
         {
             slot = -1;
-            return transform != null && _slotById.TryGetValue(transform.GetInstanceID(), out slot);
+            return transform != null && _slotById.TryGetValue(transform.GetEntityId(), out slot);
         }
 
         #endregion
@@ -39,7 +39,7 @@ namespace Nekuzaky.Hindsight.Editor
 
         #region Private and Protected
 
-        private readonly Dictionary<int, int> _slotById = new(InitialSlots);
+        private readonly Dictionary<EntityId, int> _slotById = new(InitialSlots);
 
         private Transform[] _transforms;
         private int[] _birth;
@@ -117,7 +117,7 @@ namespace Nekuzaky.Hindsight.Editor
             _birth[slot] = sequence;
             _death[slot] = Alive;
             _isRoot[slot] = transform.parent == null;
-            _slotById[transform.GetInstanceID()] = slot;
+            _slotById[transform.GetEntityId()] = slot;
             AliveCount++;
 
             AttachStreams(slot, transform, sequence);
@@ -156,7 +156,7 @@ namespace Nekuzaky.Hindsight.Editor
                 var slot = _died[i];
                 Debug.Assert(_death[slot] == Alive, "A slot cannot die twice.");
                 _death[slot] = sequence;
-                _slotById.Remove(InstanceIdOf(slot));
+                _slotById.Remove(EntityIdOf(slot));
                 _transforms[slot] = null;
                 AliveCount--;
                 DetachStreams(slot, sequence);
@@ -166,11 +166,11 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        private int InstanceIdOf(int slot)
+        private EntityId EntityIdOf(int slot)
         {
-            // The transform is destroyed, but its managed wrapper still knows its instance id.
+            // The transform is destroyed, but its managed wrapper still knows its id.
             var transform = _transforms[slot];
-            return ReferenceEquals(transform, null) ? 0 : transform.GetInstanceID();
+            return ReferenceEquals(transform, null) ? EntityId.None : transform.GetEntityId();
         }
 
         private void DisposeSlots()
