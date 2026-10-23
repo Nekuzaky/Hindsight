@@ -109,7 +109,7 @@ Open Recording...**). The window shows the timeline, the events, the graphs and 
 the timeline moves the objects of the open scene to where they were: each recorded object is found again by its place
 in the hierarchy (scene, parents, name and sibling index). Objects created while playing, or renamed or moved since,
 have no counterpart: their events and values stay in the window, and the header's object count tooltip says how many
-were not found.
+were not found. Objects kept with `DontDestroyOnLoad` only exist while playing and are not looked for.
 
 The scene is put back as it was when you click **Live** or **Close**, enter Play Mode, save the scene, open another
 one, or when scripts recompile. Rewinding never changes what is saved in your scene.

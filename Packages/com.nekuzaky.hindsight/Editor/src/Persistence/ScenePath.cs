@@ -11,13 +11,16 @@ namespace Nekuzaky.Hindsight.Editor
 
         public const int MaxDepth = 256;
 
+        public const string DontDestroyOnLoadScene = "DontDestroyOnLoad";
+
         public static void Write(BinaryWriter writer, Transform transform, List<Transform> chain)
         {
             chain.Clear();
             for (var level = transform; level != null && chain.Count < MaxDepth; level = level.parent)
                 chain.Add(level);
 
-            var complete = transform != null && chain[chain.Count - 1].parent == null;
+            var complete = transform != null && chain[chain.Count - 1].parent == null
+                && transform.gameObject.scene.name != DontDestroyOnLoadScene;
             writer.Write(complete ? transform.gameObject.scene.name ?? string.Empty : string.Empty);
             writer.Write(complete ? chain.Count : 0);
             if (!complete)
@@ -29,12 +32,13 @@ namespace Nekuzaky.Hindsight.Editor
             }
         }
 
-        public static Transform Read(BinaryReader reader, List<GameObject> roots)
+        public static Transform Read(BinaryReader reader, List<GameObject> roots, out bool described)
         {
             var sceneName = reader.ReadString();
             var depth = NativeIO.CheckCount(reader.ReadInt32(), MaxDepth, "hierarchy levels");
             Transform found = null;
             var lost = depth == 0;
+            described = depth > 0;
             for (var level = 0; level < depth; level++)
             {
                 var index = reader.ReadInt32();

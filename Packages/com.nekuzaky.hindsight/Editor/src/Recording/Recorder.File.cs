@@ -91,10 +91,10 @@ namespace Nekuzaky.Hindsight.Editor
             {
                 for (var slot = 0; slot < slots; slot++)
                 {
-                    var transform = ReadSlot(reader, slot, roots);
+                    var transform = ReadSlot(reader, slot, roots, out var described);
                     if (transform != null && !taken.Add(transform.GetEntityId()))
                         transform = null;
-                    BindSlot(slot, transform);
+                    BindSlot(slot, transform, described);
                     _access.Add(transform != null ? transform : placeholder.transform);
                 }
             }
@@ -105,7 +105,7 @@ namespace Nekuzaky.Hindsight.Editor
             NativeIO.Read(reader, _last, 0, slots, buffer);
         }
 
-        private Transform ReadSlot(BinaryReader reader, int slot, List<GameObject> roots)
+        private Transform ReadSlot(BinaryReader reader, int slot, List<GameObject> roots, out bool described)
         {
             _birth[slot] = reader.ReadInt32();
             _death[slot] = reader.ReadInt32();
@@ -113,10 +113,10 @@ namespace Nekuzaky.Hindsight.Editor
             _bodyLinear[slot] = reader.ReadInt32();
             _bodyAngular[slot] = reader.ReadInt32();
             _firstField[slot] = reader.ReadInt32();
-            return ScenePath.Read(reader, roots);
+            return ScenePath.Read(reader, roots, out described);
         }
 
-        private void BindSlot(int slot, Transform transform)
+        private void BindSlot(int slot, Transform transform, bool described)
         {
             var alive = _death[slot] == Alive;
             _transforms[slot] = transform;
@@ -126,7 +126,8 @@ namespace Nekuzaky.Hindsight.Editor
             AliveCount++;
             if (transform == null)
             {
-                MissingObjects++;
+                if (described)
+                    MissingObjects++;
                 return;
             }
             MatchedObjects++;

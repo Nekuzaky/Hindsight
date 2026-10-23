@@ -10,6 +10,7 @@ not committed.
 | `Compile.ps1 [-Full]` | Compiles in batch mode and fails on any error or warning. `-Full` rebuilds every assembly instead of the changed ones. | ~1 min |
 | `Test.ps1 [-Filter Name]` | Runs the EditMode tests and prints the failures. | ~3 min |
 | `Benchmark.ps1` | Plays six scenarios with recording off and on, and writes `Output/benchmark/benchmark.md`. | ~3 min |
+| `Check-Features.ps1` | Plays a scene with a Rigidbody and a Rigidbody2D, rewinds, resumes, saves the recording, opens it outside Play Mode and checks every step. Writes `Output/feature-check/report.txt`. | ~1 min |
 | `Capture-Media.ps1` | Opens the editor, plays the demo, rewinds to the comet that falls through the floor and saves the README screenshots and GIF to `docs/images`. Needs ffmpeg and a visible screen; do not touch the mouse while it runs. | ~2 min |
 | `Render-Brand.ps1 [-NoBrowser]` | Renders `docs/brand/*.html` into the banner, the GitHub social preview and the editor icons: a local server plus `docs/brand/render.html` opened in your browser. | seconds |
 | `Build-Check.ps1` | Builds the demo for Windows and proves Hindsight stays out of it: no editor assembly in the player, `Hindsight.Bookmark` calls removed, and the player runs without exceptions. | ~2 min |
