@@ -1,7 +1,8 @@
 # Security Policy
 
 Hindsight runs only inside the Unity Editor. It makes no network request, writes nothing outside the project (its
-settings go to `UserSettings/HindsightSettings.asset`) and is not included in player builds.
+settings go to `UserSettings/HindsightSettings.asset`). Its recorder is not included in player builds; players only get
+a 5 KB assembly with two entry points that no code calls.
 
 ## Reporting a vulnerability
 

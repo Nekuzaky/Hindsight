@@ -4,7 +4,8 @@ Hindsight is a rewind debugger for the Unity Editor. While you play, it records 
 something goes wrong, you pause, drag the timeline back, and the scene shows every object exactly as it was, with the
 Console errors, your bookmarks, the velocities and your own variables on the same timeline.
 
-It only runs in the editor. Nothing from Hindsight is compiled into your builds.
+It only runs in the editor. Your builds only contain a 5 KB assembly with the two calls you can use in game code, and
+the compiler removes those calls, so no Hindsight code runs in a player.
 
 ## Guides
 

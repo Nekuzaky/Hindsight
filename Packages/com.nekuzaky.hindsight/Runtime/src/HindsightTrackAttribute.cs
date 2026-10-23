@@ -8,7 +8,7 @@ namespace Nekuzaky.Hindsight
     /// and plot it in the Hindsight window. Supports float, double, int, long, short, byte, bool, enums, Vector2,
     /// Vector3, Vector4, Vector2Int, Vector3Int, Quaternion and Color.
     /// For an auto-property, put the attribute on its backing field: <c>[field: HindsightTrack]</c>.
-    /// The attribute is removed from player builds.
+    /// Uses of the attribute are removed from player builds by the compiler.
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = true)]
     [Conditional("UNITY_EDITOR")]

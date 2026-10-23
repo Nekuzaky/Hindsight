@@ -2,7 +2,7 @@
   "name": "com.nekuzaky.hindsight",
   "version": "1.0.2",
   "displayName": "Hindsight",
-  "description": "Rewind debugger for the Unity Editor. Hindsight records your scene while you play, so when something goes wrong you pause, drag the timeline back and see every object exactly as it was, with errors, bookmarks, velocities and your own variables on the timeline. Editor only: nothing ships in your builds.",
+  "description": "Rewind debugger for the Unity Editor. Hindsight records your scene while you play, so when something goes wrong you pause, drag the timeline back and see every object exactly as it was, with errors, bookmarks, velocities and your own variables on the timeline. Editor only: no Hindsight code runs in your builds.",
   "unity": "6000.3",
   "documentationUrl": "https://github.com/Nekuzaky/Hindsight/blob/main/Packages/com.nekuzaky.hindsight/Documentation~/index.md",
   "changelogUrl": "https://github.com/Nekuzaky/Hindsight/blob/main/Packages/com.nekuzaky.hindsight/CHANGELOG.md",

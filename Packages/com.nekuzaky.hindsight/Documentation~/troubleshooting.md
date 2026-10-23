@@ -37,6 +37,12 @@ the object when the object first appeared. A warning in the Console names unsupp
 They were logged during a frame. Messages logged between frames by editor code are ignored unless **Editor messages**
 is on.
 
+**Does Hindsight add anything to my build?**
+A 5 KB assembly, `Nekuzaky.Hindsight.dll`, which holds `Hindsight.Bookmark` and `[HindsightTrack]` so your game code
+compiles in a build. The compiler removes every call to them, argument included, so nothing runs. The recorder, the
+window and Burst jobs live in an editor-only assembly and are never in a player. If you imported the Bouncing Balls
+Demo sample, its two scripts compile into your build too: delete the sample folder once you are done with it.
+
 **Can I leave Hindsight installed for the whole team?**
 Yes. It records only in the editor, and each person can turn recording off in their own preferences.
 

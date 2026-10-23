@@ -5,7 +5,8 @@ timeline back, and see every object exactly as it was, with errors, bookmarks, v
 the same timeline.
 
 - Zero setup: install and press Play.
-- Zero cost in builds: editor-only, and the two runtime calls are compiled out.
+- Zero cost in builds: the recorder is editor-only; your player only gets a 5 KB assembly whose two calls are
+  removed by the compiler.
 - A few hundredths of a millisecond per frame in the editor, Burst jobs, no garbage.
 
 ## Install

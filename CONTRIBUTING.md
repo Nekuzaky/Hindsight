@@ -19,6 +19,7 @@ in the editor.
 | `Tools/Benchmark.ps1` | Measures the cost of recording in real Play Mode. |
 | `Tools/Capture-Media.ps1` | Records the README screenshots and GIF from the real editor. |
 | `Tools/Render-Brand.ps1` | Renders the banner, the social preview and the editor icons. |
+| `Tools/Build-Check.ps1` | Builds the demo player and checks that Hindsight stays out of it. |
 | `Tools/Check-Rules.ps1` | Checks the code rules listed below. |
 | `Tools/Sync-Sample.ps1` | Copies `Assets/Demo` into the package sample. |
 

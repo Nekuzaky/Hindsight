@@ -29,7 +29,7 @@ public class Enemy : MonoBehaviour
 - The optional argument is the name shown in the window.
 - Supported types: `float`, `double`, `int`, `uint`, `long`, `short`, `ushort`, `byte`, `sbyte`, `bool`, enums,
   `Vector2`, `Vector3`, `Vector4`, `Vector2Int`, `Vector3Int`, `Quaternion` (shown as Euler angles) and `Color`.
-- The attribute is marked `[Conditional("UNITY_EDITOR")]`, so it does not exist in your builds.
+- The attribute is marked `[Conditional("UNITY_EDITOR")]`: the compiler drops it from your fields in a build.
 
 Each field is read through a getter compiled once with expression trees: no reflection and no allocation per frame.
 

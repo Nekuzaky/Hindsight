@@ -12,6 +12,7 @@ not committed.
 | `Benchmark.ps1` | Plays six scenarios with recording off and on, and writes `Output/benchmark/benchmark.md`. | ~3 min |
 | `Capture-Media.ps1` | Opens the editor, plays the demo, rewinds to the comet that falls through the floor and saves the README screenshots and GIF to `docs/images`. Needs ffmpeg and a visible screen; do not touch the mouse while it runs. | ~2 min |
 | `Render-Brand.ps1 [-NoBrowser]` | Renders `docs/brand/*.html` into the banner, the GitHub social preview and the editor icons: a local server plus `docs/brand/render.html` opened in your browser. | seconds |
+| `Build-Check.ps1` | Builds the demo for Windows and proves Hindsight stays out of it: no editor assembly in the player, `Hindsight.Bookmark` calls removed, and the player runs without exceptions. | ~2 min |
 | `Check-Rules.ps1` | Checks the code rules: functions of 60 lines at most, no recursion, no `goto`, no `unsafe`, no warning silenced with `#pragma`, warnings as errors for the assemblies under `Assets`, and never in the shipped package. | seconds |
 | `Sync-Sample.ps1` | Copies `Assets/Demo` into the package sample `Samples~/Demo`. | seconds |
 

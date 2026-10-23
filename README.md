@@ -53,8 +53,9 @@ make it happen again.
   **Track in Hindsight**. `Hindsight.Bookmark("...")` from code, or `F9`.
 - **Motion trails** of the selected objects in the Scene view, with the errors marked on the path.
 - **Stack traces you can click.** Every script line of an event's stack trace opens the script at that line.
-- **Zero cost in builds.** Everything runs in an editor-only assembly; the attribute and the bookmark call are
-  compiled out of player builds.
+- **Zero cost in builds.** The recorder and the window live in an editor-only assembly. Your build only gets a 5 KB
+  assembly holding `Hindsight.Bookmark` and `[HindsightTrack]`, and the compiler removes every call to them, so no
+  Hindsight code runs in a player. `Tools/Build-Check.ps1` proves it on a real build.
 - **Light in the editor.** Burst jobs on worker threads, about 0.01 to 0.05 ms of main-thread time per frame for
   10,000 objects, and no garbage collection once warmed up.
 - **Every option in Preferences**, saved per user so teammates do not step on each other.
