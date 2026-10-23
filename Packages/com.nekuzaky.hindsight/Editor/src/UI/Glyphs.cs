@@ -57,6 +57,9 @@ namespace Nekuzaky.Hindsight.Editor
         public const string Layers = "layers";
         public const string Hierarchy = "diagram-2";
         public const string Copy = "clipboard";
+        public const string Spawned = "plus-circle-fill";
+        public const string Destroyed = "dash-circle-fill";
+        public const string Scene = "map-fill";
         public const string Waiting = "hourglass-split";
 
         public static Texture2D WindowIcon

@@ -267,6 +267,62 @@ namespace Nekuzaky.Hindsight.Tests
             Assert.AreEqual(before, CountSystems());
         }
 
+        [Test]
+        public void MarksObjectsThatAppearAndDisappear()
+        {
+            Spawn(3);
+            Start();
+            Capture(0);
+            Capture(1);
+            Assert.AreEqual(0, _recorder.Markers.CountOf(MarkerKind.Spawn), "The scene found by the first scan is not an event.");
+
+            var late = Spawn(2);
+            _recorder.MarkHierarchyDirty();
+            Capture(2);
+            Assert.AreEqual(1, _recorder.Markers.CountOf(MarkerKind.Spawn));
+            ref readonly var spawn = ref _recorder.Markers[_recorder.Markers.Count - 1];
+            Assert.AreEqual("2 objects appeared", spawn.Message);
+            Assert.AreEqual(2, spawn.Sequence);
+
+            Object.DestroyImmediate(late[0]);
+            Capture(3);
+            Capture(4);
+            Assert.AreEqual(1, _recorder.Markers.CountOf(MarkerKind.Destroy));
+            ref readonly var destroy = ref _recorder.Markers[_recorder.Markers.Count - 1];
+            Assert.AreEqual("1 object disappeared", destroy.Message);
+            Assert.IsTrue(destroy.IsLifecycle);
+        }
+
+        [Test]
+        public void RepeatedSpawnsCollapseIntoOneMarker()
+        {
+            Start();
+            Capture(0);
+            for (var frame = 1; frame <= 5; frame++)
+            {
+                Spawn(1);
+                _recorder.MarkHierarchyDirty();
+                Capture(frame);
+            }
+            Assert.AreEqual(1, _recorder.Markers.CountOf(MarkerKind.Spawn));
+            Assert.AreEqual(5, _recorder.Markers[_recorder.Markers.Count - 1].Count);
+        }
+
+        [Test]
+        public void LifecycleMarkersCanBeTurnedOff()
+        {
+            var options = new RecorderOptions(30d, 64L * 1024 * 1024, 0d, 100000, true, true, true, false, ~0, markLifecycle: false);
+            _recorder = new Recorder(options);
+            Capture(0);
+            var doomed = Spawn(1);
+            _recorder.MarkHierarchyDirty();
+            Capture(1);
+            Object.DestroyImmediate(doomed[0]);
+            Capture(2);
+            Capture(3);
+            Assert.AreEqual(0, _recorder.Markers.Count);
+        }
+
         private void Move(GameObject[] cubes, int frame)
         {
             for (var i = 0; i < cubes.Length; i++)

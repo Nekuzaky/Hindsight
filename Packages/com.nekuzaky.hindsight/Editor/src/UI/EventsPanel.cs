@@ -66,7 +66,7 @@ namespace Nekuzaky.Hindsight.Editor
         private Label _detailMessage;
         private VisualElement _detailLinks;
         private string _search = string.Empty;
-        private MarkerFilter _filter = new() { Errors = true, Warnings = true, Bookmarks = true, Logs = true };
+        private MarkerFilter _filter = new() { Errors = true, Warnings = true, Bookmarks = true, Logs = true, Lifecycle = true };
         private int _builtVersion = -1;
         private Recorder _builtFor;
 
@@ -105,6 +105,7 @@ namespace Nekuzaky.Hindsight.Editor
             chips.Add(Chip(MarkerKind.Warning, "Warnings"));
             chips.Add(Chip(MarkerKind.Bookmark, "Bookmarks"));
             chips.Add(Chip(MarkerKind.Log, "Logs"));
+            chips.Add(Chip(MarkerKind.Spawn, "Objects appearing, objects destroyed and scene loads"));
             header.Add(chips);
 
             var search = new ToolbarSearchField();
@@ -228,6 +229,7 @@ namespace Nekuzaky.Hindsight.Editor
                 case MarkerKind.Warning: _filter.Warnings = !_filter.Warnings; break;
                 case MarkerKind.Log: _filter.Logs = !_filter.Logs; break;
                 case MarkerKind.Bookmark: _filter.Bookmarks = !_filter.Bookmarks; break;
+                case MarkerKind.Spawn: _filter.Lifecycle = !_filter.Lifecycle; break;
                 default: _filter.Errors = !_filter.Errors; break;
             }
             Rebuild(HindsightSession.Recorder);
@@ -242,6 +244,8 @@ namespace Nekuzaky.Hindsight.Editor
             var total = markers == null ? 0
                 : kind == MarkerKind.Error
                     ? markers.CountOf(MarkerKind.Error) + markers.CountOf(MarkerKind.Exception) + markers.CountOf(MarkerKind.Assert)
+                : kind == MarkerKind.Spawn
+                    ? markers.CountOf(MarkerKind.Spawn) + markers.CountOf(MarkerKind.Destroy) + markers.CountOf(MarkerKind.SceneLoad)
                     : markers.CountOf(kind);
             count.text = Format.Integer(total);
         }

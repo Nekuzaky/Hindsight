@@ -119,6 +119,7 @@ namespace Nekuzaky.Hindsight.Editor
             _isRoot[slot] = transform.parent == null;
             _slotById[transform.GetEntityId()] = slot;
             AliveCount++;
+            _appeared++;
 
             AttachStreams(slot, transform, sequence);
             return slot;

@@ -34,6 +34,8 @@ Hindsight without affecting the others.
 | Warnings | On | Amber marker for every warning. |
 | Logs | Off | Grey marker for every `Debug.Log`. Can be noisy. |
 | Editor messages | Off | Also records messages logged by editor code between two frames (inspectors, importers, the editor itself). Off keeps the timeline about your game. |
+| Objects appearing and disappearing | On | Teal marker on frames where recorded objects appear, slate marker where they are destroyed. Takes effect at the next Play Mode. |
+| Scene loads | On | White marker, with a line across the timeline, when a scene loads. |
 | Collapse repeated messages | On | A message repeated within two frames extends the previous marker (with a count) instead of adding a new one. |
 
 ## Rewinding and Scene view

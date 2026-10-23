@@ -63,6 +63,8 @@ namespace Nekuzaky.Hindsight.Editor
         public bool RecordLogs { get => _recordLogs; set => Set(ref _recordLogs, value); }
         public bool CollapseRepeats { get => _collapseRepeats; set => Set(ref _collapseRepeats, value); }
         public bool RecordEditorMessages { get => _recordEditorMessages; set => Set(ref _recordEditorMessages, value); }
+        public bool MarkObjectLifecycle { get => _markObjectLifecycle; set => Set(ref _markObjectLifecycle, value); }
+        public bool MarkSceneLoads { get => _markSceneLoads; set => Set(ref _markSceneLoads, value); }
 
         public bool HideObjectsNotYetSpawned { get => _hideNotYetSpawned; set => Set(ref _hideNotYetSpawned, value); }
         public bool ShowSceneOverlay { get => _showSceneOverlay; set => Set(ref _showSceneOverlay, value); }
@@ -93,6 +95,8 @@ namespace Nekuzaky.Hindsight.Editor
         [SerializeField] private bool _recordLogs;
         [SerializeField] private bool _collapseRepeats = true;
         [SerializeField] private bool _recordEditorMessages;
+        [SerializeField] private bool _markObjectLifecycle = true;
+        [SerializeField] private bool _markSceneLoads = true;
 
         [SerializeField] private bool _hideNotYetSpawned = true;
         [SerializeField] private bool _showSceneOverlay = true;

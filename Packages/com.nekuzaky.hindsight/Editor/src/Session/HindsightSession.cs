@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -106,6 +107,7 @@ namespace Nekuzaky.Hindsight.Editor
 
             PlayerLoopHook.Install(OnFrameStart, OnAfterLateUpdate, OnFrameEnd);
             Application.logMessageReceived += OnLogMessage;
+            SceneManager.sceneLoaded += OnSceneLoaded;
             global::Nekuzaky.Hindsight.Hindsight.BookmarkRequested += OnBookmarkRequested;
             StatusChanged?.Invoke();
         }
@@ -118,6 +120,7 @@ namespace Nekuzaky.Hindsight.Editor
 
             PlayerLoopHook.Uninstall();
             Application.logMessageReceived -= OnLogMessage;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
             global::Nekuzaky.Hindsight.Hindsight.BookmarkRequested -= OnBookmarkRequested;
 
             Rewind.Changed -= OnRewindChanged;
@@ -266,6 +269,17 @@ namespace Nekuzaky.Hindsight.Editor
         }
 
         private static void OnBookmarkRequested(string label) => AddBookmark(label);
+
+        private static void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (Recorder == null)
+                return;
+            Recorder.MarkHierarchyDirty();
+            if (!HindsightSettings.instance.MarkSceneLoads)
+                return;
+            var text = mode == LoadSceneMode.Additive ? $"Scene loaded (additive): {scene.name}" : $"Scene loaded: {scene.name}";
+            Recorder.AddMarker(MarkerKind.SceneLoad, text, string.Empty, Time.unscaledTimeAsDouble);
+        }
 
         private static void OnRewindChanged()
         {

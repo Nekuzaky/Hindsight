@@ -112,8 +112,9 @@ namespace Nekuzaky.Hindsight.Editor
         public bool Warnings;
         public bool Logs;
         public bool Bookmarks;
+        public bool Lifecycle;
 
-        public static MarkerFilter All => new() { Errors = true, Warnings = true, Logs = true, Bookmarks = true };
+        public static MarkerFilter All => new() { Errors = true, Warnings = true, Logs = true, Bookmarks = true, Lifecycle = true };
 
         public readonly bool Accepts(MarkerKind kind)
         {
@@ -122,6 +123,9 @@ namespace Nekuzaky.Hindsight.Editor
                 case MarkerKind.Warning: return Warnings;
                 case MarkerKind.Log: return Logs;
                 case MarkerKind.Bookmark: return Bookmarks;
+                case MarkerKind.Spawn:
+                case MarkerKind.Destroy:
+                case MarkerKind.SceneLoad: return Lifecycle;
                 default: return Errors;
             }
         }

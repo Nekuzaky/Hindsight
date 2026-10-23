@@ -77,6 +77,9 @@ namespace Nekuzaky.Hindsight.Editor
             AddToggle(events, "Logs", "Adds a grey marker for every Debug.Log. Can be noisy.", settings.RecordLogs, v => settings.RecordLogs = v);
             AddToggle(events, "Editor messages", "Also records messages raised by editor code between two frames, such as inspectors and importers. Off keeps the timeline about the game.",
                 settings.RecordEditorMessages, v => settings.RecordEditorMessages = v);
+            AddToggle(events, "Objects appearing and disappearing", "Adds a marker on frames where recorded objects appear or are destroyed. Repeats on consecutive frames collapse into one marker. Takes effect at the next Play Mode.",
+                settings.MarkObjectLifecycle, v => settings.MarkObjectLifecycle = v);
+            AddToggle(events, "Scene loads", "Adds a marker when a scene loads.", settings.MarkSceneLoads, v => settings.MarkSceneLoads = v);
             AddToggle(events, "Collapse repeated messages", "A message repeated on consecutive frames becomes one marker with a count.",
                 settings.CollapseRepeats, v => settings.CollapseRepeats = v);
 

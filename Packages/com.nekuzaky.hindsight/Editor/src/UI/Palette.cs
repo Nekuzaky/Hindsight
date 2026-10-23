@@ -21,6 +21,9 @@ namespace Nekuzaky.Hindsight.Editor
         public static readonly Color Warning = Rgb(255, 176, 32);
         public static readonly Color Log = Rgb(139, 146, 162);
         public static readonly Color Bookmark = Rgb(56, 189, 248);
+        public static readonly Color Spawn = Rgb(45, 212, 191);
+        public static readonly Color Destroy = Rgb(148, 163, 184);
+        public static readonly Color SceneLoad = Rgb(226, 232, 240);
         public static readonly Color Activity = new(139f / 255f, 124f / 255f, 1f, 0.55f);
         public static readonly Color Unrecorded = new(0f, 0f, 0f, 0.28f);
         public static readonly Color Hover = new(1f, 1f, 1f, 0.35f);
@@ -32,6 +35,9 @@ namespace Nekuzaky.Hindsight.Editor
                 case MarkerKind.Warning: return Warning;
                 case MarkerKind.Log: return Log;
                 case MarkerKind.Bookmark: return Bookmark;
+                case MarkerKind.Spawn: return Spawn;
+                case MarkerKind.Destroy: return Destroy;
+                case MarkerKind.SceneLoad: return SceneLoad;
                 default: return Error;
             }
         }
@@ -44,6 +50,9 @@ namespace Nekuzaky.Hindsight.Editor
                 case MarkerKind.Warning: return Glyphs.Warning;
                 case MarkerKind.Log: return Glyphs.Log;
                 case MarkerKind.Bookmark: return Glyphs.Bookmark;
+                case MarkerKind.Spawn: return Glyphs.Spawned;
+                case MarkerKind.Destroy: return Glyphs.Destroyed;
+                case MarkerKind.SceneLoad: return Glyphs.Scene;
                 default: return Glyphs.Error;
             }
         }
@@ -55,6 +64,9 @@ namespace Nekuzaky.Hindsight.Editor
                 case MarkerKind.Warning: return "hs-kind--warning";
                 case MarkerKind.Log: return "hs-kind--log";
                 case MarkerKind.Bookmark: return "hs-kind--bookmark";
+                case MarkerKind.Spawn: return "hs-kind--spawn";
+                case MarkerKind.Destroy: return "hs-kind--destroy";
+                case MarkerKind.SceneLoad: return "hs-kind--scene";
                 default: return "hs-kind--error";
             }
         }

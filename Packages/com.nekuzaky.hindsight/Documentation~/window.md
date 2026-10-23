@@ -54,7 +54,7 @@ below -5 for ten frames is found once, where it crosses. Focus the field to see 
 
 - **Ruler**: seconds relative to now.
 - **Event lane**: red circles are errors and exceptions, amber triangles warnings, grey dots logs, blue diamonds
-  bookmarks. A message repeated on consecutive frames is one marker with a bar covering its range.
+  bookmarks, teal and slate triangles objects appearing and being destroyed, white squares scene loads. A message repeated on consecutive frames is one marker with a bar covering its range.
 - **Activity lane**: one bar per frame, as tall as the number of values that changed. Spikes show where things happened.
 - **Playhead**: green and labelled `LIVE` while the scene is live, purple while rewinding. The tinted area on its right
   is the part of the recording that lies in the future of the displayed frame.
@@ -70,7 +70,7 @@ below -5 for ten frames is found once, where it crosses. Focus the field to see 
 
 ## Events
 
-Every recorded event, newest last. The chips filter errors, warnings, bookmarks and logs, and show their counts; the
+Every recorded event, newest last. The chips filter errors, warnings, bookmarks, logs, and objects and scenes, and show their counts; the
 search field filters by text. Selecting an event rewinds to it and shows its full message; each script line of its
 stack trace becomes a button that opens the script at that line.
 

@@ -13,7 +13,8 @@ namespace Nekuzaky.Hindsight.Editor
         public const int DefaultMaxFrames = 1 << 17;
 
         public RecorderOptions(double historySeconds, long memoryBudgetBytes, double captureInterval, int maxObjects,
-            bool recordVelocities, bool recordTrackedFields, bool ignoreStatic, bool ignoreCameras, int layerMask)
+            bool recordVelocities, bool recordTrackedFields, bool ignoreStatic, bool ignoreCameras, int layerMask,
+            bool markLifecycle = true)
         {
             Debug.Assert(historySeconds > 0d && memoryBudgetBytes > 0, "History length and budget must be positive.");
             HistorySeconds = historySeconds;
@@ -25,6 +26,7 @@ namespace Nekuzaky.Hindsight.Editor
             IgnoreStatic = ignoreStatic;
             IgnoreCameras = ignoreCameras;
             LayerMask = layerMask;
+            MarkLifecycle = markLifecycle;
         }
 
         public double HistorySeconds { get; }
@@ -36,6 +38,7 @@ namespace Nekuzaky.Hindsight.Editor
         public bool IgnoreStatic { get; }
         public bool IgnoreCameras { get; }
         public int LayerMask { get; }
+        public bool MarkLifecycle { get; }
 
         /// <summary>70 % of the budget goes to transform deltas, 15 % to values; checkpoints use the rest.</summary>
         public int TransformCapacity => Clamp(MemoryBudgetBytes * 70 / 100 / TransformDeltaBytes);
@@ -61,7 +64,8 @@ namespace Nekuzaky.Hindsight.Editor
                 settings.RecordTrackedFields,
                 settings.IgnoreStaticObjects,
                 settings.IgnoreCameras,
-                settings.LayerMask);
+                settings.LayerMask,
+                settings.MarkObjectLifecycle);
         }
 
         #endregion

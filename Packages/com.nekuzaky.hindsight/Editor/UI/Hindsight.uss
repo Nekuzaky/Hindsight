@@ -39,6 +39,9 @@
 .hs-kind--warning .hs-icon--kind { -unity-background-image-tint-color: rgb(255, 176, 32); }
 .hs-kind--log .hs-icon--kind { -unity-background-image-tint-color: rgb(139, 146, 162); }
 .hs-kind--bookmark .hs-icon--kind { -unity-background-image-tint-color: rgb(56, 189, 248); }
+.hs-kind--spawn .hs-icon--kind { -unity-background-image-tint-color: rgb(45, 212, 191); }
+.hs-kind--destroy .hs-icon--kind { -unity-background-image-tint-color: rgb(148, 163, 184); }
+.hs-kind--scene .hs-icon--kind { -unity-background-image-tint-color: rgb(226, 232, 240); }
 
 /* ------------------------------------------------------------------ window */
 

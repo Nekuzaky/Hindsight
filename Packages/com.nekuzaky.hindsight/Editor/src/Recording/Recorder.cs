@@ -84,6 +84,7 @@ namespace Nekuzaky.Hindsight.Editor
 
         private JobHandle _handle;
         private bool _pending;
+        private int _appeared;
         private double _lastCaptureTime = double.NegativeInfinity;
 
         #endregion
@@ -102,8 +103,12 @@ namespace Nekuzaky.Hindsight.Editor
                 return;
             _lastCaptureTime = clock.RealTime;
 
+            _appeared = 0;
             Scan();
-            History.BeginFrame(clock, SlotCount, StreamCount);
+            var sequence = History.BeginFrame(clock, SlotCount, StreamCount);
+            // The first scan finds the whole scene: that is the start of the recording, not an event.
+            if (_appeared > 0 && Options.MarkLifecycle && _capturedFrames > 1)
+                Markers.Add(MarkerKind.Spawn, LifecycleText.Appeared(_appeared), string.Empty, sequence, clock.RealTime);
             Schedule();
         }
 
@@ -120,7 +125,10 @@ namespace Nekuzaky.Hindsight.Editor
             _pending = false;
 
             var sequence = History.NewestSequence + 1;
-            ProcessDeaths(_counters[RecorderCounters.Died], sequence);
+            var died = _counters[RecorderCounters.Died];
+            ProcessDeaths(died, sequence);
+            if (died > 0 && Options.MarkLifecycle)
+                Markers.Add(MarkerKind.Destroy, LifecycleText.Disappeared(died), string.Empty, sequence, History.Frame(sequence).RealTime);
             SampleValues(_counters[RecorderCounters.Sampled], sequence);
             History.EndFrame(_counters[RecorderCounters.Written], _last, SlotCount, _values, StreamCount);
         }

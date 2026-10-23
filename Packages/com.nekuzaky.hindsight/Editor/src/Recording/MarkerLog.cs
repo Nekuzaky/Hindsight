@@ -10,7 +10,10 @@ namespace Nekuzaky.Hindsight.Editor
         Assert,
         Warning,
         Log,
-        Bookmark
+        Bookmark,
+        Spawn,
+        Destroy,
+        SceneLoad
     }
 
     /// <summary>Something that happened at a frame: a Console message or a bookmark.</summary>
@@ -25,6 +28,9 @@ namespace Nekuzaky.Hindsight.Editor
         public string StackTrace;
 
         public readonly bool IsError => Kind == MarkerKind.Error || Kind == MarkerKind.Exception || Kind == MarkerKind.Assert;
+
+        /// <summary>Objects appearing or disappearing, or a scene loading.</summary>
+        public readonly bool IsLifecycle => Kind == MarkerKind.Spawn || Kind == MarkerKind.Destroy || Kind == MarkerKind.SceneLoad;
 
         /// <summary>First line of the message, the part shown in lists.</summary>
         public readonly string Title

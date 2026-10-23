@@ -10,6 +10,8 @@ All notable changes to this package are documented here. The format follows
 - **Find when:** type a condition such as `y < -5`, `speed > 20`, `Health <= 0` or `any y < -10` and jump to the
   frame where it becomes true; `Enter` for the next match, `Shift+Enter` for the previous one, `Ctrl+F` to focus.
   `any` searches the position of every recorded object and selects the one it finds.
+- **Lifecycle markers:** the timeline marks frames where objects appear or are destroyed ("3 objects appeared") and
+  where scenes load. They have their own filter chip and can be turned off in the preferences.
 
 ### Changed
 

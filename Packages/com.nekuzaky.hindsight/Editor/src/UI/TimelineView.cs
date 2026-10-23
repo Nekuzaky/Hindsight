@@ -209,6 +209,27 @@ namespace Nekuzaky.Hindsight.Editor
                 case MarkerKind.Log:
                     painter.Arc(center, 2.5f, Angle.Degrees(0f), Angle.Degrees(360f), ArcDirection.Clockwise);
                     break;
+                case MarkerKind.Spawn:
+                    painter.MoveTo(center + new Vector2(0f, -4f));
+                    painter.LineTo(center + new Vector2(4f, 3f));
+                    painter.LineTo(center + new Vector2(-4f, 3f));
+                    break;
+                case MarkerKind.Destroy:
+                    painter.MoveTo(center + new Vector2(-4f, -3f));
+                    painter.LineTo(center + new Vector2(4f, -3f));
+                    painter.LineTo(center + new Vector2(0f, 4f));
+                    break;
+                case MarkerKind.SceneLoad:
+                    var scene = color;
+                    scene.a = 0.35f;
+                    StrokeLine(painter, new Vector2(center.x, RulerHeight), new Vector2(center.x, height), scene, 1f);
+                    painter.fillColor = color;
+                    painter.BeginPath();
+                    painter.MoveTo(center + new Vector2(-3.5f, -3.5f));
+                    painter.LineTo(center + new Vector2(3.5f, -3.5f));
+                    painter.LineTo(center + new Vector2(3.5f, 3.5f));
+                    painter.LineTo(center + new Vector2(-3.5f, 3.5f));
+                    break;
                 default:
                     painter.Arc(center, 4.5f, Angle.Degrees(0f), Angle.Degrees(360f), ArcDirection.Clockwise);
                     break;
